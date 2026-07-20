@@ -6,47 +6,20 @@
 <title>Polla CONMEBOL 2026</title>
 <style>
   :root{
-    --pitch:#0d3b2e;
-    --pitch-deep:#082a20;
-    --pitch-line:#124a39;
-    --chalk:#eef2ea;
-    --chalk-dim:#c7d2c8;
-    --gold:#c9a227;
-    --gold-bright:#e7c65a;
-    --ink:#0a1712;
-    --line: rgba(238,242,234,.14);
-    --red:#b23a2e;
-    --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --pitch:#0d3b2e; --pitch-deep:#082a20; --pitch-line:#124a39;
+    --chalk:#eef2ea; --chalk-dim:#c7d2c8; --gold:#c9a227; --gold-bright:#e7c65a;
+    --ink:#0a1712; --line:rgba(238,242,234,.14); --red:#b23a2e;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
   }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
-  body{
-    font-family:var(--sans);
-    color:var(--chalk);
-    background:
-      repeating-linear-gradient(180deg, rgba(255,255,255,0.015) 0 2px, transparent 2px 60px),
-      linear-gradient(180deg, var(--pitch-deep), var(--pitch) 40%, var(--pitch-deep));
-    min-height:100vh;
-  }
+  body{font-family:var(--sans);color:var(--chalk);background:repeating-linear-gradient(180deg,rgba(255,255,255,.015) 0 2px,transparent 2px 60px),linear-gradient(180deg,var(--pitch-deep),var(--pitch) 40%,var(--pitch-deep));min-height:100vh;}
   .shell{max-width:1100px;margin:0 auto;padding:20px 16px 80px;}
-
-  /* HERO */
   .hero{padding:28px 4px 10px;}
   .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.25em;text-transform:uppercase;color:var(--gold-bright);opacity:.85;}
-  h1{
-    font-size:clamp(28px,5vw,44px);
-    line-height:1.02;
-    margin:6px 0 4px;
-    font-weight:800;
-    letter-spacing:-.01em;
-    text-transform:uppercase;
-    background:linear-gradient(180deg,var(--chalk),var(--chalk-dim));
-    -webkit-background-clip:text;background-clip:text;color:transparent;
-  }
+  h1{font-size:clamp(28px,5vw,44px);line-height:1.02;margin:6px 0 4px;font-weight:800;letter-spacing:-.01em;text-transform:uppercase;background:linear-gradient(180deg,var(--chalk),var(--chalk-dim));-webkit-background-clip:text;background-clip:text;color:transparent;}
   .sub{color:var(--chalk-dim);font-size:14.5px;max-width:620px;margin:0 0 18px;}
-
-  /* STAKES LADDER - signature element */
   .ladder{display:flex;align-items:flex-end;gap:0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:14px 0;margin-bottom:22px;overflow-x:auto;}
   .rung{flex:1;text-align:center;position:relative;padding:0 6px;white-space:nowrap;}
   .rung:not(:last-child)::after{content:"";position:absolute;right:0;top:50%;width:1px;height:22px;background:var(--line);transform:translateY(-50%);}
@@ -56,94 +29,69 @@
   .rung:nth-child(2) .name{font-size:10.5px;} .rung:nth-child(2) .mult{font-size:18px;opacity:.7;}
   .rung:nth-child(3) .name{font-size:11px;} .rung:nth-child(3) .mult{font-size:22px;opacity:.85;color:var(--gold-bright);}
   .rung:nth-child(4) .name{font-size:12px;} .rung:nth-child(4) .mult{font-size:28px;color:var(--gold-bright);text-shadow:0 0 14px rgba(231,198,90,.5);}
-
   /* IDENTITY BAR */
   .me-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;background:rgba(0,0,0,.18);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:18px;}
-  .me-bar label{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--chalk-dim);}
-  .me-bar input{background:var(--ink);border:1px solid var(--line);color:var(--chalk);padding:7px 10px;border-radius:7px;font-size:14px;min-width:140px;}
-  .me-bar .tag{margin-left:auto;font-size:12px;color:var(--chalk-dim);}
+  .me-bar .tag{font-size:12px;color:var(--chalk-dim);flex:1 1 100%;}
   .me-bar .whoami{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
   .me-bar .whoami b{color:var(--gold-bright);}
   .field-group{display:flex;flex-direction:column;gap:3px;}
   .field-group span{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--chalk-dim);}
-
-  /* ADMIN */
-  .phase-row{display:flex;flex-wrap:wrap;align-items:center;gap:10px;background:rgba(0,0,0,.22);border:1px solid var(--line);border-radius:9px;padding:10px 12px;margin-bottom:8px;}
-  .phase-row .pname{font-weight:700;min-width:190px;}
-  .phase-row .pstatus{font-family:var(--mono);font-size:11.5px;color:var(--chalk-dim);flex:1;min-width:200px;}
-  .seg{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;}
-  .seg button{
-    font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.05em;
-    background:transparent;border:none;color:var(--chalk-dim);padding:7px 10px;cursor:pointer;
-  }
-  .seg button + button{border-left:1px solid var(--line);}
-  .seg button.on{background:var(--gold);color:var(--ink);font-weight:700;}
-  .auth-card{max-width:420px;}
-  .readonly-note{background:rgba(178,58,46,.12);border:1px solid var(--red);color:var(--chalk);padding:10px 12px;border-radius:9px;font-size:13px;margin-bottom:14px;}
-
+  .field-group input{background:var(--ink);border:1px solid var(--line);color:var(--chalk);padding:7px 10px;border-radius:7px;font-size:14px;min-width:150px;}
   /* TABS */
   .tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px;}
-  .tab{
-    font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;
-    background:transparent;border:1px solid var(--line);color:var(--chalk-dim);
-    padding:9px 14px;border-radius:999px;cursor:pointer;transition:.15s;
-  }
+  .tab{font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;background:transparent;border:1px solid var(--line);color:var(--chalk-dim);padding:9px 14px;border-radius:999px;cursor:pointer;transition:.15s;}
   .tab:hover{border-color:var(--gold);color:var(--chalk);}
   .tab.active{background:var(--gold);border-color:var(--gold);color:var(--ink);font-weight:700;}
-
   /* TOURNAMENT TOGGLE */
   .tsel{display:flex;gap:8px;margin-bottom:18px;}
-  .tsel button{
-    flex:1;padding:12px;border-radius:10px;border:1px solid var(--line);background:rgba(0,0,0,.15);
-    color:var(--chalk-dim);cursor:pointer;font-weight:700;letter-spacing:.02em;
-  }
-  .tsel button.on{background:linear-gradient(180deg, var(--pitch-line), rgba(0,0,0,.1));border-color:var(--gold);color:var(--chalk);box-shadow:inset 0 0 0 1px rgba(201,162,39,.3);}
+  .tsel button{flex:1;padding:12px;border-radius:10px;border:1px solid var(--line);background:rgba(0,0,0,.15);color:var(--chalk-dim);cursor:pointer;font-weight:700;letter-spacing:.02em;}
+  .tsel button.on{background:linear-gradient(180deg,var(--pitch-line),rgba(0,0,0,.1));border-color:var(--gold);color:var(--chalk);box-shadow:inset 0 0 0 1px rgba(201,162,39,.3);}
   .tsel button small{display:block;font-family:var(--mono);font-weight:400;font-size:10px;color:var(--gold-bright);letter-spacing:.1em;text-transform:uppercase;margin-top:2px;}
-
   /* CARDS */
   .card{background:rgba(0,0,0,.18);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:14px;}
   .card h2{margin:0 0 4px;font-size:13px;text-transform:uppercase;letter-spacing:.12em;color:var(--gold-bright);font-family:var(--mono);}
   .card .hint{color:var(--chalk-dim);font-size:12.5px;margin:0 0 12px;}
-
   /* BRACKET */
   .bracket-cols{display:flex;gap:14px;overflow-x:auto;padding-bottom:6px;}
-  .bcol{min-width:220px;flex:1;}
+  .bcol{min-width:200px;flex:1;}
   .bcol h3{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--chalk-dim);margin:0 0 4px;}
   .bcol .dates{font-size:11px;color:var(--gold-bright);opacity:.85;margin-bottom:10px;font-family:var(--mono);}
-  .series{background:rgba(0,0,0,.22);border:1px solid var(--line);border-radius:9px;padding:10px;margin-bottom:22px;}
+  .series{background:rgba(0,0,0,.22);border:1px solid var(--line);border-radius:9px;padding:10px;margin-bottom:16px;}
   .series .row{display:flex;align-items:center;gap:6px;margin-bottom:4px;}
   .series input.team{flex:1;background:var(--ink);border:1px solid var(--line);color:var(--chalk);padding:6px 8px;border-radius:6px;font-size:13px;}
   .series .vs{text-align:center;font-family:var(--mono);font-size:10px;color:var(--chalk-dim);opacity:.6;margin:2px 0;}
-  .series .actual{font-family:var(--mono);font-size:12px;color:var(--gold-bright);margin-top:6px;}
-
-  .btn{
-    font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.06em;
-    background:var(--gold);color:var(--ink);border:none;padding:9px 16px;border-radius:8px;cursor:pointer;font-weight:700;
-  }
+  /* BUTTONS */
+  .btn{font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.06em;background:var(--gold);color:var(--ink);border:none;padding:9px 16px;border-radius:8px;cursor:pointer;font-weight:700;}
   .btn:hover{background:var(--gold-bright);}
   .btn.ghost{background:transparent;border:1px solid var(--line);color:var(--chalk-dim);}
   .btn.ghost:hover{border-color:var(--red);color:var(--chalk);}
-  .btn:disabled{opacity:.4;cursor:not-allowed;}
   .btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;}
-
-  /* MATCH PREDICTION / RESULT FORM */
+  /* MATCHUP */
   .matchup{background:rgba(0,0,0,.22);border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:12px;}
-  .matchup .teams{display:flex;justify-content:space-between;align-items:center;font-weight:700;margin-bottom:10px;font-size:14.5px;}
-  .matchup .teams .vsx{font-family:var(--mono);color:var(--chalk-dim);font-size:11px;font-weight:400;}
+  .matchup .match-header{margin-bottom:12px;}
+  .matchup .match-title{font-weight:700;font-size:15px;margin-bottom:4px;}
+  .matchup .match-legs{display:grid;grid-template-columns:1fr 1fr;gap:4px;font-family:var(--mono);font-size:11px;color:var(--chalk-dim);}
+  .matchup .match-legs .leg-info{background:rgba(0,0,0,.2);border-radius:6px;padding:4px 8px;}
   .leg{margin-bottom:10px;}
   .leg .leg-label{font-family:var(--mono);font-size:10.5px;text-transform:uppercase;color:var(--chalk-dim);letter-spacing:.08em;margin-bottom:6px;display:block;}
+  .leg .leg-teams{font-size:12px;color:var(--chalk-dim);margin-bottom:6px;}
   .score-pair{display:flex;align-items:center;gap:8px;}
-  .score-box{
-    width:56px;text-align:center;background:var(--ink);border:1px solid var(--gold);color:var(--gold-bright);
-    font-family:var(--mono);font-size:20px;font-weight:700;border-radius:8px;padding:8px 0;
-  }
+  .score-box{width:56px;text-align:center;background:var(--ink);border:1px solid var(--gold);color:var(--gold-bright);font-family:var(--mono);font-size:20px;font-weight:700;border-radius:8px;padding:8px 0;}
   .score-dash{font-family:var(--mono);color:var(--chalk-dim);font-size:18px;}
   select.clas{width:100%;background:var(--ink);border:1px solid var(--line);color:var(--chalk);padding:8px;border-radius:7px;font-size:13.5px;}
-  .locked{opacity:.7;}
-  .locked .score-box, .locked select{border-color:var(--line);color:var(--chalk-dim);}
+  .locked .score-box,.locked select{border-color:var(--line);color:var(--chalk-dim);opacity:.7;}
   .points-pill{display:inline-block;margin-top:8px;background:rgba(201,162,39,.16);border:1px solid var(--gold);color:var(--gold-bright);font-family:var(--mono);font-size:12px;padding:4px 10px;border-radius:999px;}
   .penales{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--chalk-dim);margin-top:6px;}
-
+  /* ADMIN */
+  .phase-row{display:flex;flex-wrap:wrap;align-items:center;gap:10px;background:rgba(0,0,0,.22);border:1px solid var(--line);border-radius:9px;padding:10px 12px;margin-bottom:8px;}
+  .phase-row .pname{font-weight:700;min-width:180px;}
+  .phase-row .pstatus{font-family:var(--mono);font-size:11px;color:var(--chalk-dim);flex:1;min-width:180px;}
+  .seg{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;}
+  .seg button{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.05em;background:transparent;border:none;color:var(--chalk-dim);padding:7px 10px;cursor:pointer;}
+  .seg button+button{border-left:1px solid var(--line);}
+  .seg button.on{background:var(--gold);color:var(--ink);font-weight:700;}
+  .auth-card{max-width:440px;}
+  .readonly-note{background:rgba(178,58,46,.12);border:1px solid var(--red);color:var(--chalk);padding:10px 12px;border-radius:9px;font-size:13px;margin-bottom:14px;}
   /* TABLE */
   table{width:100%;border-collapse:collapse;font-size:13.5px;}
   th{font-family:var(--mono);text-transform:uppercase;font-size:10.5px;letter-spacing:.06em;color:var(--gold-bright);text-align:left;padding:8px 6px;border-bottom:1px solid var(--line);}
@@ -151,1087 +99,844 @@
   tr:first-child td{font-weight:700;}
   .rank{font-family:var(--mono);color:var(--gold-bright);}
   .muted{color:var(--chalk-dim);font-size:12px;}
-
   .empty{padding:30px 10px;text-align:center;color:var(--chalk-dim);font-size:13.5px;}
-  .toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--gold);color:var(--ink);
-    padding:10px 18px;border-radius:999px;font-weight:700;font-size:13px;box-shadow:0 6px 20px rgba(0,0,0,.35);
-    opacity:0;pointer-events:none;transition:.25s;z-index:99;}
+  .toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--gold);color:var(--ink);padding:10px 18px;border-radius:999px;font-weight:700;font-size:13px;box-shadow:0 6px 20px rgba(0,0,0,.35);opacity:0;pointer-events:none;transition:.25s;z-index:99;}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(-4px);}
-
   .rules-list{padding-left:18px;margin:6px 0;}
   .rules-list li{margin-bottom:6px;line-height:1.5;color:var(--chalk-dim);font-size:13.5px;}
   .rules-list b{color:var(--chalk);}
   code.k{font-family:var(--mono);background:rgba(0,0,0,.25);padding:1px 6px;border-radius:5px;color:var(--gold-bright);}
-
   footer{margin-top:30px;padding-top:14px;border-top:1px solid var(--line);color:var(--chalk-dim);font-size:11.5px;text-align:center;}
-
-  @media (max-width:640px){
-    .bracket-cols{flex-direction:column;}
-    .bcol{min-width:0;}
-  }
+  @media(max-width:640px){.bracket-cols{flex-direction:column;}.bcol{min-width:0;}.matchup .match-legs{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
 <div class="shell" id="app">Cargando…</div>
 <div class="toast" id="toast"></div>
-
 <script>
-/* ======================= CONFIG ======================= */
+/* =====================================================================
+   STORAGE — usa localStorage para persistencia real en Vercel.
+   Fallback a memoria si localStorage no está disponible.
+   ===================================================================== */
+const MEM = {};
+function lsGet(key){ try{ return localStorage.getItem(key); }catch(e){ return MEM[key]||null; } }
+function lsSet(key,val){ try{ localStorage.setItem(key,val); }catch(e){ MEM[key]=val; } }
+function lsDel(key){ try{ localStorage.removeItem(key); }catch(e){ delete MEM[key]; } }
+function lsKeys(prefix){
+  const out=[];
+  try{
+    for(let i=0;i<localStorage.length;i++){
+      const k=localStorage.key(i);
+      if(k&&k.startsWith(prefix)) out.push(k);
+    }
+  }catch(e){
+    Object.keys(MEM).forEach(k=>{ if(k.startsWith(prefix)) out.push(k); });
+  }
+  return out;
+}
+
+/* =====================================================================
+   CONFIGURACIÓN DE TORNEOS Y RONDAS
+   ===================================================================== */
 const TOURNEYS = {
-  CL: {
-    label:"Copa Libertadores",
-    short:"Libertadores",
+  CL:{
+    label:"Copa Libertadores", short:"Libertadores",
     rounds:[
-      {key:"octavos",   label:"Octavos de Final", mult:1,    n:8, vuelta:true,  dates:{ida:"11–13 de agosto 2026", vuelta:"18–20 de agosto 2026"}, startDate:"2026-08-11"},
-      {key:"cuartos",   label:"Cuartos de Final", mult:1.25, n:4, vuelta:true,  dates:{ida:"8–10 de septiembre 2026", vuelta:"15–17 de septiembre 2026"}, startDate:"2026-09-08"},
-      {key:"semifinal", label:"Semifinal",        mult:1.5,  n:2, vuelta:true,  dates:{ida:"14–15 de octubre 2026", vuelta:"21–22 de octubre 2026"}, startDate:"2026-10-14"},
-      {key:"final",     label:"Final",            mult:2,    n:1, vuelta:false, dates:{unico:"28 de noviembre 2026 · Estadio Centenario, Montevideo"}, startDate:"2026-11-28"}
+      {key:"octavos",   label:"Octavos de Final",  mult:1,    n:8, vuelta:true,  dates:{ida:"11–13 de agosto 2026",        vuelta:"18–20 de agosto 2026"},        startDate:"2026-08-11"},
+      {key:"cuartos",   label:"Cuartos de Final",   mult:1.25, n:4, vuelta:true,  dates:{ida:"8–10 de septiembre 2026",     vuelta:"15–17 de septiembre 2026"},    startDate:"2026-09-08"},
+      {key:"semifinal", label:"Semifinal",           mult:1.5,  n:2, vuelta:true,  dates:{ida:"14–15 de octubre 2026",       vuelta:"21–22 de octubre 2026"},        startDate:"2026-10-14"},
+      {key:"final",     label:"Final",               mult:2,    n:1, vuelta:false, dates:{unico:"28 de noviembre 2026 · Estadio Centenario, Montevideo"},            startDate:"2026-11-28"}
     ]
   },
-  CS: {
-    label:"Copa Sudamericana",
-    short:"Sudamericana",
+  CS:{
+    label:"Copa Sudamericana", short:"Sudamericana",
     rounds:[
-      {key:"previa",    label:"Fase Previa (Playoff de Octavos)", mult:1, n:8, vuelta:true, dates:{ida:"21–23 de julio 2026", vuelta:"28–30 de julio 2026"}, startDate:"2026-07-21"},
-      {key:"octavos",   label:"Octavos de Final", mult:1,    n:8, vuelta:true,  dates:{ida:"11–13 de agosto 2026", vuelta:"18–20 de agosto 2026"}, startDate:"2026-08-11"},
-      {key:"cuartos",   label:"Cuartos de Final", mult:1.25, n:4, vuelta:true,  dates:{ida:"8–10 de septiembre 2026", vuelta:"15–17 de septiembre 2026"}, startDate:"2026-09-08"},
-      {key:"semifinal", label:"Semifinal",        mult:1.5,  n:2, vuelta:true,  dates:{ida:"13–14 de octubre 2026", vuelta:"20–21 de octubre 2026"}, startDate:"2026-10-13"},
-      {key:"final",     label:"Final",            mult:2,    n:1, vuelta:false, dates:{unico:"21 de noviembre 2026 · Estadio Metropolitano, Barranquilla"}, startDate:"2026-11-21"}
+      {key:"previa",    label:"Fase Previa",         mult:1,    n:8, vuelta:true,  dates:{ida:"21–23 de julio 2026",         vuelta:"28–30 de julio 2026"},          startDate:"2026-07-21"},
+      {key:"octavos",   label:"Octavos de Final",    mult:1,    n:8, vuelta:true,  dates:{ida:"11–13 de agosto 2026",        vuelta:"18–20 de agosto 2026"},         startDate:"2026-08-11"},
+      {key:"cuartos",   label:"Cuartos de Final",    mult:1.25, n:4, vuelta:true,  dates:{ida:"8–10 de septiembre 2026",     vuelta:"15–17 de septiembre 2026"},     startDate:"2026-09-08"},
+      {key:"semifinal", label:"Semifinal",            mult:1.5,  n:2, vuelta:true,  dates:{ida:"13–14 de octubre 2026",       vuelta:"20–21 de octubre 2026"},        startDate:"2026-10-13"},
+      {key:"final",     label:"Final",                mult:2,    n:1, vuelta:false, dates:{unico:"21 de noviembre 2026 · Estadio Metropolitano, Barranquilla"},       startDate:"2026-11-21"}
     ]
   }
-};
-const ROUND_ORDER = ["previa","octavos","cuartos","semifinal","final"];
-
-/* ¿Ya arrancó una fase? (bloquea pronósticos aunque el resultado real no esté cargado) */
-function phaseLocked(round){
-  if(!round.startDate) return false;
-  const start = new Date(round.startDate+"T00:00:00");
-  return new Date() >= start;
-}
-
-/* Estado manual de apuestas por fase: 'auto' (según fecha), 'open' (forzada abierta), 'closed' (forzada cerrada) */
-async function ensurePhaseStatus(t){
-  let raw = await sGet("phasestatus:"+t, true);
-  let parsed = {};
-  if(raw){ try{ parsed = JSON.parse(raw); }catch(e){ parsed = {}; } }
-  let changed = false;
-  TOURNEYS[t].rounds.forEach(r=>{ if(!parsed[r.key]){ parsed[r.key]='auto'; changed=true; } });
-  if(changed) await sSet("phasestatus:"+t, JSON.stringify(parsed), true);
-  return parsed;
-}
-async function savePhaseStatus(t, data){
-  STATE.phaseStatus[t] = data;
-  await sSet("phasestatus:"+t, JSON.stringify(data), true);
-}
-function isRoundLocked(t, round){
-  const status = (STATE.phaseStatus[t]||{})[round.key] || 'auto';
-  if(status==='open') return false;
-  if(status==='closed') return true;
-  return phaseLocked(round);
-}
-function roundStatusLabel(t, round){
-  const status = (STATE.phaseStatus[t]||{})[round.key] || 'auto';
-  if(status==='open') return '🟢 Forzada ABIERTA por el admin';
-  if(status==='closed') return '🔒 Forzada CERRADA por el admin';
-  return phaseLocked(round) ? '🔒 Cerrada automáticamente (ya comenzó)' : '🟢 Abierta (automático, según fecha)';
-}
-
-/* ======================= STATE ======================= */
-let STATE = {
-  me:"",
-  realName:"",
-  loggedIn:false,
-  isAdmin:false,
-  tournament:"CL",
-  tab:"cuadro",
-  brackets:{CL:null, CS:null},
-  results:{CL:null, CS:null},
-  phaseStatus:{CL:null, CS:null},
 };
 const TAB_KEYS = ["cuadro","pronosticar","resultados","tabla","reglas","admin"];
 
-/* ======================= STORAGE HELPERS ======================= */
-async function sGet(key, shared){
-  try{
-    const r = await window.storage.get(key, !!shared);
-    return r ? r.value : null;
-  }catch(e){ return null; }
-}
-async function sSet(key, value, shared){
-  try{
-    await window.storage.set(key, value, !!shared);
-    return true;
-  }catch(e){ console.error("storage set failed", key, e); return false; }
-}
-async function sList(prefix, shared){
-  try{
-    const r = await window.storage.list(prefix, !!shared);
-    return (r && r.keys) ? r.keys : [];
-  }catch(e){ return []; }
-}
-
-function slug(name){
-  return (name||"").trim().toLowerCase()
-    .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
-    .replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"") || "anon";
-}
-
-/* ======================= AUTENTICACIÓN DE PARTICIPANTES ======================= */
-/* Cada participante se identifica con: nombre real, apodo en la apuesta, correo y contraseña.
-   Esto es solo para evitar malos entendidos entre amigos (que alguien cambie el
-   pronóstico de otro sin querer) — no es un sistema de seguridad robusto.
-   IMPORTANTE: este archivo no tiene servidor propio, así que no puede enviar correos
-   automáticos por sí mismo. La "recuperación por correo" arma un borrador de e-mail
-   (mailto:) hacia el correo registrado, que la propia persona debe enviar (o reenviar)
-   desde su cliente de correo. */
-function mailtoReminder(email, nick, password){
-  const subject = encodeURIComponent("Recordatorio de contraseña — Polla CONMEBOL 2026");
-  const body = encodeURIComponent(`Hola ${nick},\n\nEste es tu recordatorio de acceso a la Polla CONMEBOL 2026:\n\nApodo: ${nick}\nContraseña: ${password}\n\nSi no lo solicitaste tú, avísale a quien organiza la polla.`);
-  window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
-}
-
-async function userAuth(){
-  const real = document.getElementById("regReal").value.trim();
-  const nick = document.getElementById("regNick").value.trim();
-  const email = document.getElementById("regEmail").value.trim();
-  const pass = document.getElementById("regPass").value;
-  if(!nick || !pass){ toast("Completa tu apodo y tu contraseña"); return; }
-  const key = "user:"+slug(nick);
-  const raw = await sGet(key, true);
-  if(raw){
-    let existing; try{ existing = JSON.parse(raw); }catch(e){ existing=null; }
-    if(!existing || existing.password !== pass){ toast("Ese apodo ya existe y la contraseña no coincide"); return; }
-    STATE.me = existing.nick; STATE.realName = existing.realName; STATE.loggedIn = true;
-    // completa el correo si la cuenta es anterior a esta función y todavía no lo tenía
-    if(!existing.email && email){ existing.email = email; await sSet(key, JSON.stringify(existing), true); }
-    toast(`Hola de nuevo, ${STATE.me}`);
-  }else{
-    if(!real){ toast("Escribe tu nombre real para crear tu cuenta"); return; }
-    if(!email){ toast("Escribe tu correo electrónico: lo vas a necesitar para recuperar tu contraseña"); return; }
-    const data = {nick, realName:real, email, password:pass};
-    await sSet(key, JSON.stringify(data), true);
-    STATE.me = nick; STATE.realName = real; STATE.loggedIn = true;
-    toast(`Cuenta creada. ¡Bienvenido, ${nick}!`);
-  }
-  await sSet("session", JSON.stringify({nick:STATE.me, realName:STATE.realName}), false);
-  await render();
-}
-async function userLogout(){
-  STATE.me=""; STATE.realName=""; STATE.loggedIn=false;
-  await sSet("session","", false);
-  toast("Sesión cerrada");
-  await render();
-}
-async function forgotUserPassword(){
-  const nick = document.getElementById("forgotNick").value.trim();
-  if(!nick){ toast("Escribe tu apodo"); return; }
-  const key = "user:"+slug(nick);
-  const raw = await sGet(key, true);
-  if(!raw){ toast("No existe ninguna cuenta con ese apodo"); return; }
-  let existing; try{ existing = JSON.parse(raw); }catch(e){ existing=null; }
-  if(!existing){ toast("No se pudo leer esa cuenta"); return; }
-  if(!existing.email){ toast("Esa cuenta no tiene correo registrado — pídele al administrador que te restablezca la contraseña"); return; }
-  mailtoReminder(existing.email, existing.nick, existing.password);
-  toast(`Se abrió un borrador de correo hacia ${existing.email}`);
-}
-function toggleForgotUser(){
-  const el = document.getElementById("forgotUserBox");
-  if(el) el.style.display = el.style.display==="none" ? "flex" : "none";
-}
-
-/* ======================= AUTENTICACIÓN DE ADMINISTRADOR ======================= */
-/* Un único administrador por grupo, con una contraseña compartida que controla
-   quién puede editar el cuadro, cargar resultados, restablecer contraseñas de
-   participantes y abrir/cerrar apuestas por fase. */
-async function adminSetup(){
-  const email = document.getElementById("adminEmailSetup").value.trim();
-  const p1 = document.getElementById("adminPass1").value;
-  const p2 = document.getElementById("adminPass2").value;
-  if(!email){ toast("Escribe un correo: lo vas a necesitar para recuperar la contraseña de administrador"); return; }
-  if(!p1 || p1.length<4){ toast("La contraseña debe tener al menos 4 caracteres"); return; }
-  if(p1!==p2){ toast("Las contraseñas no coinciden"); return; }
-  await sSet("adminPassword", p1, true);
-  await sSet("adminEmail", email, true);
-  STATE.isAdmin = true;
-  await sSet("adminUnlocked","1", false);
-  toast("Contraseña de administrador creada");
-  await render();
-}
-async function adminLogin(){
-  const pass = document.getElementById("adminPassInput").value;
-  const real = await sGet("adminPassword", true);
-  if(pass && real && pass===real){
-    STATE.isAdmin = true;
-    await sSet("adminUnlocked","1", false);
-    toast("Sesión de administrador iniciada");
-  }else{
-    toast("Contraseña incorrecta");
-  }
-  await render();
-}
-async function adminLogout(){
-  STATE.isAdmin = false;
-  await sSet("adminUnlocked","", false);
-  toast("Sesión de administrador cerrada");
-  await render();
-}
-async function forgotAdminPassword(){
-  const email = await sGet("adminEmail", true);
-  const pass = await sGet("adminPassword", true);
-  if(!email){ toast("Todavía no hay un correo de administrador registrado"); return; }
-  mailtoReminder(email, "Administrador", pass);
-  toast(`Se abrió un borrador de correo hacia ${email}`);
-}
-/* El admin restablece la contraseña de un participante sin necesitar la anterior */
-async function adminResetUserPassword(){
-  if(!STATE.isAdmin){ toast("Solo el administrador puede hacer esto"); return; }
-  const nick = document.getElementById("resetNick").value.trim();
-  const newPass = document.getElementById("resetNewPass").value;
-  if(!nick || !newPass){ toast("Completa el apodo y la nueva contraseña"); return; }
-  const key = "user:"+slug(nick);
-  const raw = await sGet(key, true);
-  if(!raw){ toast("No existe ninguna cuenta con ese apodo"); return; }
-  let existing; try{ existing = JSON.parse(raw); }catch(e){ existing=null; }
-  if(!existing){ toast("No se pudo leer esa cuenta"); return; }
-  existing.password = newPass;
-  await sSet(key, JSON.stringify(existing), true);
-  toast(`Contraseña de "${existing.nick}" restablecida`);
-  document.getElementById("resetNick").value = "";
-  document.getElementById("resetNewPass").value = "";
-}
-
-/* ======================= BRACKET / RESULTS DEFAULTS ======================= */
-/* Tabla de seeds (orden oficial 1..N) y llaves de Octavos/Fase Previa según
-   lo indicado por el organizador. Regla: en cada llave, el equipo con el
-   número MAYOR juega de local en la ida (el de número menor juega de local
-   en la vuelta). Esa misma regla se respeta automáticamente al avanzar de
-   ronda (cuartos, semifinal, final): entre los dos clasificados, el que
-   tenía el número de seed más alto en su ronda anterior arranca de local. */
+/* =====================================================================
+   SEEDS Y LLAVES OFICIALES
+   ===================================================================== */
 const CL_SEEDS = {
-  1:"Flamengo", 2:"Independiente Rivadavia", 3:"Independiente del Valle", 4:"Universidad Católica",
-  5:"Cerro Porteño", 6:"Liga de Quito", 7:"Corinthians", 8:"Coquimbo Unido",
-  9:"Rosario Central", 10:"Mirassol", 11:"Palmeiras", 12:"Cruzeiro",
-  13:"Platense", 14:"Estudiantes (LP)", 15:"Deportes Tolima", 16:"Fluminense"
+  1:"Flamengo",2:"Independiente Rivadavia",3:"Independiente del Valle",4:"Universidad Católica",
+  5:"Cerro Porteño",6:"Liga de Quito",7:"Corinthians",8:"Coquimbo Unido",
+  9:"Rosario Central",10:"Mirassol",11:"Palmeiras",12:"Cruzeiro",
+  13:"Platense",14:"Estudiantes (LP)",15:"Deportes Tolima",16:"Fluminense"
 };
-// Confirmado por el organizador: 4 vs 14, 7 vs 9, 1 vs 12, 3 vs 15, 6 vs 10, 5 vs 11, 8 vs 13, 2 vs 16
+// Par [loSeed, hiSeed] — hi juega de local en la IDA, lo de local en la VUELTA
 const CL_OCTAVOS_PAIRS = [[4,14],[7,9],[1,12],[3,15],[6,10],[5,11],[8,13],[2,16]];
 
 const CS_SEEDS = {
-  1:"Botafogo", 2:"River Plate", 3:"Montevideo City Torque", 4:"Olimpia",
-  5:"São Paulo", 6:"Macará", 7:"Atlético Mineiro", 8:"Recoleta",
-  9:"Grêmio", 10:"Bragantino", 11:"Vasco da Gama", 12:"O'Higgins",
-  13:"Tigre", 14:"Caracas", 15:"Cienciano", 16:"Santos",
-  17:"Universidad Central", 18:"Lanús", 19:"Santa Fe", 20:"Nacional",
-  21:"Boca Juniors", 22:"Independiente Medellín", 23:"Sporting Cristal", 24:"Bolívar"
+  1:"Botafogo",2:"River Plate",3:"Montevideo City Torque",4:"Olimpia",5:"São Paulo",
+  6:"Macará",7:"Atlético Mineiro",8:"Recoleta",9:"Grêmio",10:"Bragantino",
+  11:"Vasco da Gama",12:"O'Higgins",13:"Tigre",14:"Caracas",15:"Cienciano",
+  16:"Santos",17:"Universidad Central",18:"Lanús",19:"Santa Fe",20:"Nacional",
+  21:"Boca Juniors",22:"Independiente Medellín",23:"Sporting Cristal",24:"Bolívar"
 };
-// Confirmado por el organizador: 12 vs 21, 9 vs 24, 14 vs 19, 11 vs 22, 10 vs 23, 16 vs 17, 13 vs 20, 15 vs 18
 const CS_PREVIA_PAIRS = [[12,21],[9,24],[14,19],[11,22],[10,23],[16,17],[13,20],[15,18]];
-// A qué seed (1..8, clasificado directo a Octavos) se enfrenta el ganador de cada llave de la Fase Previa, en el mismo orden que CS_PREVIA_PAIRS
+// Seed clasificado directo a Octavos que espera al ganador de cada llave de la Fase Previa
 const CS_PREVIA_FACES = [8,5,2,4,7,6,3,1];
 
+/* Convierte un par [lo,hi] en objeto {home, away, homeSeed, awaySeed}
+   donde home = el de seed más alto (juega de local en la IDA). */
+function buildSeries(loSeed, hiSeed, seedsMap){
+  return { home:seedsMap[hiSeed]||"", away:seedsMap[loSeed]||"", homeSeed:hiSeed, awaySeed:loSeed };
+}
 function buildSeedSeries(pairs, seedsMap){
   return pairs.map(([a,b])=>{
-    const hi = Math.max(a,b), lo = Math.min(a,b); // el de mayor número juega de local en la ida
-    return {home:seedsMap[hi]||"", away:seedsMap[lo]||"", homeSeed:hi, awaySeed:lo};
+    const hi=Math.max(a,b), lo=Math.min(a,b);
+    return buildSeries(lo, hi, seedsMap);
   });
 }
 
 function defaultBracket(t){
-  const b = {};
+  const b={};
   TOURNEYS[t].rounds.forEach(r=>{
-    b[r.key] = Array.from({length:r.n}, (_,i)=>({id:i, home:"", away:"", homeSeed:null, awaySeed:null}));
+    b[r.key]=Array.from({length:r.n},(_,i)=>({id:i,home:"",away:"",homeSeed:null,awaySeed:null}));
   });
   if(t==="CL"){
-    const seeded = buildSeedSeries(CL_OCTAVOS_PAIRS, CL_SEEDS);
-    seeded.forEach((s,i)=>{ b.octavos[i] = {id:i, ...s}; });
+    buildSeedSeries(CL_OCTAVOS_PAIRS,CL_SEEDS).forEach((s,i)=>{ b.octavos[i]={id:i,...s}; });
   }
   if(t==="CS"){
-    const seededPrevia = buildSeedSeries(CS_PREVIA_PAIRS, CS_SEEDS);
-    seededPrevia.forEach((s,i)=>{ b.previa[i] = {id:i, ...s}; });
-    // Octavos: el lado del clasificado directo (seed 1-8) ya se conoce; el otro lado se completa
-    // cuando termine la Fase Previa (a mano, o con el botón "Avanzar Fase Previa → Octavos").
+    buildSeedSeries(CS_PREVIA_PAIRS,CS_SEEDS).forEach((s,i)=>{ b.previa[i]={id:i,...s}; });
     CS_PREVIA_FACES.forEach((topSeed,i)=>{
-      b.octavos[i] = {id:i, home:"", away:CS_SEEDS[topSeed], homeSeed:null, awaySeed:topSeed};
+      b.octavos[i]={id:i,home:"",away:CS_SEEDS[topSeed],homeSeed:null,awaySeed:topSeed};
     });
   }
   return b;
 }
 
-/* Devuelve {name, seed} del clasificado real de una llave ya jugada, o null si todavía no tiene resultado */
-function winnerOf(t, roundKey, seriesId){
-  const results = STATE.results[t] || {};
-  const bracket = STATE.brackets[t];
-  const s = (bracket[roundKey]||[]).find(x=>x.id===seriesId);
-  const act = results[roundKey+"-"+seriesId];
-  if(!s || !act || !act.clasificado) return null;
-  if(act.clasificado === s.home) return {name:s.home, seed:s.homeSeed};
-  if(act.clasificado === s.away) return {name:s.away, seed:s.awaySeed};
-  return {name:act.clasificado, seed:null};
-}
+/* =====================================================================
+   ESTADO DE LA APP
+   ===================================================================== */
+let STATE={
+  me:"", loggedIn:false, isAdmin:false,
+  tournament:"CL", tab:"cuadro",
+  brackets:{CL:null,CS:null}, results:{CL:null,CS:null}, phaseStatus:{CL:null,CS:null}
+};
 
-/* Recarga SOLO Octavos (y la Fase Previa en Sudamericana) con la tabla de seeds oficial,
-   sin tocar Cuartos/Semifinal/Final ni los resultados ya cargados. Útil si el cuadro
-   ya se había guardado antes con datos viejos o incompletos. */
-async function reseedOctavos(){
-  if(!STATE.isAdmin){ toast("Solo el administrador puede recargar el cuadro"); return; }
-  const t = STATE.tournament;
-  const bracket = STATE.brackets[t];
-  if(t==="CL"){
-    const seeded = buildSeedSeries(CL_OCTAVOS_PAIRS, CL_SEEDS);
-    bracket.octavos = seeded.map((s,i)=>({id:i, ...s}));
-  }else{
-    const seededPrevia = buildSeedSeries(CS_PREVIA_PAIRS, CS_SEEDS);
-    bracket.previa = seededPrevia.map((s,i)=>({id:i, ...s}));
-    CS_PREVIA_FACES.forEach((topSeed,i)=>{
-      bracket.octavos[i] = {id:i, home:"", away:CS_SEEDS[topSeed], homeSeed:null, awaySeed:topSeed};
-    });
-  }
-  await saveBracket(t, bracket);
-  toast("Octavos recargado con los equipos oficiales");
-  await renderTab();
-}
-
-async function ensureBracket(t){
-  let raw = await sGet("bracket:"+t, true);
-  if(!raw){
-    const def = defaultBracket(t);
-    await sSet("bracket:"+t, JSON.stringify(def), true);
-    return def;
-  }
-  let parsed;
-  try{ parsed = JSON.parse(raw); }catch(e){ parsed = defaultBracket(t); }
-  // migración: si se agregó una ronda nueva (ej. Fase Previa) a un torneo ya guardado, completarla
-  let changed = false;
+/* =====================================================================
+   HELPERS DE ALMACENAMIENTO (sincrónicos — localStorage)
+   ===================================================================== */
+function loadBracket(t){
+  const raw=lsGet("bracket:"+t);
+  if(!raw){ const d=defaultBracket(t); lsSet("bracket:"+t,JSON.stringify(d)); return d; }
+  let parsed; try{ parsed=JSON.parse(raw); }catch(e){ parsed=defaultBracket(t); }
+  // migración: agregar rondas nuevas si no existen
+  let changed=false;
   TOURNEYS[t].rounds.forEach(r=>{
-    if(!parsed[r.key]){
-      const fresh = defaultBracket(t);
-      parsed[r.key] = fresh[r.key];
-      changed = true;
-    }
+    if(!parsed[r.key]){ parsed[r.key]=defaultBracket(t)[r.key]; changed=true; }
   });
-  if(changed) await sSet("bracket:"+t, JSON.stringify(parsed), true);
+  if(changed) lsSet("bracket:"+t,JSON.stringify(parsed));
   return parsed;
 }
-async function saveBracket(t, data){
-  STATE.brackets[t] = data;
-  await sSet("bracket:"+t, JSON.stringify(data), true);
-}
+function saveBracket(t,data){ STATE.brackets[t]=data; lsSet("bracket:"+t,JSON.stringify(data)); }
 
-async function ensureResults(t){
-  let raw = await sGet("results:"+t, true);
-  if(!raw){ await sSet("results:"+t, JSON.stringify({}), true); return {}; }
+function loadResults(t){
+  const raw=lsGet("results:"+t);
+  if(!raw){ lsSet("results:"+t,"{}"); return {}; }
   try{ return JSON.parse(raw); }catch(e){ return {}; }
 }
-async function saveResults(t, data){
-  STATE.results[t] = data;
-  await sSet("results:"+t, JSON.stringify(data), true);
-}
+function saveResults(t,data){ STATE.results[t]=data; lsSet("results:"+t,JSON.stringify(data)); }
 
-async function loadAllPredictions(t){
-  const keys = await sList("pred:"+t+":", true);
-  const out = [];
-  for(const k of keys){
-    const raw = await sGet(k, true);
-    if(!raw) continue;
-    try{ out.push(JSON.parse(raw)); }catch(e){}
-  }
+function loadPhaseStatus(t){
+  const raw=lsGet("phasestatus:"+t);
+  let parsed={}; if(raw){ try{ parsed=JSON.parse(raw); }catch(e){} }
+  let changed=false;
+  TOURNEYS[t].rounds.forEach(r=>{ if(!parsed[r.key]){ parsed[r.key]="auto"; changed=true; } });
+  if(changed) lsSet("phasestatus:"+t,JSON.stringify(parsed));
+  return parsed;
+}
+function savePhaseStatus(t,data){ STATE.phaseStatus[t]=data; lsSet("phasestatus:"+t,JSON.stringify(data)); }
+
+function loadAllPredictions(t){
+  const keys=lsKeys("pred:"+t+":");
+  const out=[];
+  keys.forEach(k=>{ const r=lsGet(k); if(r){ try{ out.push(JSON.parse(r)); }catch(e){} } });
   return out;
 }
-async function loadMyPrediction(t, me){
-  if(!me) return {displayName:"", entries:{}};
-  const raw = await sGet("pred:"+t+":"+slug(me), true);
-  if(!raw) return {displayName:me, entries:{}};
-  try{ const p = JSON.parse(raw); if(!p.entries) p.entries={}; return p; }catch(e){ return {displayName:me, entries:{}}; }
+function loadMyPrediction(t,me){
+  if(!me) return {displayName:"",entries:{}};
+  const raw=lsGet("pred:"+t+":"+slug(me));
+  if(!raw) return {displayName:me,entries:{}};
+  try{ const p=JSON.parse(raw); if(!p.entries) p.entries={}; return p; }catch(e){ return {displayName:me,entries:{}}; }
 }
-async function saveMyPrediction(t, me, data){
-  await sSet("pred:"+t+":"+slug(me), JSON.stringify(data), true);
+function saveMyPrediction(t,me,data){ lsSet("pred:"+t+":"+slug(me),JSON.stringify(data)); }
+
+/* =====================================================================
+   BLOQUEO DE FASES
+   ===================================================================== */
+function phaseLocked(round){
+  if(!round.startDate) return false;
+  return new Date()>=new Date(round.startDate+"T00:00:00");
+}
+function isRoundLocked(t,round){
+  const status=(STATE.phaseStatus[t]||{})[round.key]||"auto";
+  if(status==="open") return false;
+  if(status==="closed") return true;
+  return phaseLocked(round);
+}
+function roundStatusLabel(t,round){
+  const status=(STATE.phaseStatus[t]||{})[round.key]||"auto";
+  if(status==="open") return "🟢 Forzada ABIERTA por el admin";
+  if(status==="closed") return "🔒 Forzada CERRADA por el admin";
+  return phaseLocked(round)?"🔒 Cerrada (ya comenzó)":"🟢 Abierta (según fecha)";
 }
 
-/* ======================= SCORING ======================= */
+/* =====================================================================
+   AUTENTICACIÓN DE USUARIOS
+   Solo nombre + contraseña. El "nombre" es el identificador público en rankings.
+   ===================================================================== */
+function slug(name){
+  return (name||"").trim().toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+    .replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"")||"anon";
+}
+
+function userAuth(){
+  const name=document.getElementById("regName").value.trim();
+  const pass=document.getElementById("regPass").value;
+  if(!name||!pass){ toast("Completa tu nombre y contraseña"); return; }
+  const key="user:"+slug(name);
+  const raw=lsGet(key);
+  if(raw){
+    let u; try{ u=JSON.parse(raw); }catch(e){ u=null; }
+    if(!u||u.password!==pass){ toast("Ese nombre ya existe y la contraseña no coincide"); return; }
+    STATE.me=u.name; STATE.loggedIn=true;
+    lsSet("session",JSON.stringify({name:u.name}));
+    toast("Hola de nuevo, "+u.name+"!");
+  }else{
+    const data={name,password:pass};
+    lsSet(key,JSON.stringify(data));
+    STATE.me=name; STATE.loggedIn=true;
+    lsSet("session",JSON.stringify({name}));
+    toast("Bienvenido, "+name+"!");
+  }
+  render();
+}
+function userLogout(){
+  STATE.me=""; STATE.loggedIn=false;
+  lsDel("session");
+  toast("Sesión cerrada");
+  render();
+}
+
+/* =====================================================================
+   AUTENTICACIÓN DE ADMINISTRADOR
+   Solo puede existir 1 administrador por instalación.
+   ===================================================================== */
+function adminSetup(){
+  const p1=document.getElementById("adminPass1").value;
+  const p2=document.getElementById("adminPass2").value;
+  if(!p1||p1.length<4){ toast("La contraseña debe tener al menos 4 caracteres"); return; }
+  if(p1!==p2){ toast("Las contraseñas no coinciden"); return; }
+  lsSet("adminPassword",p1);
+  lsSet("adminSession","1");
+  STATE.isAdmin=true;
+  toast("Cuenta de administrador creada");
+  render();
+}
+function adminLogin(){
+  const pass=document.getElementById("adminPassInput").value;
+  const real=lsGet("adminPassword");
+  if(pass&&real&&pass===real){
+    lsSet("adminSession","1");
+    STATE.isAdmin=true;
+    toast("Sesión de administrador iniciada");
+  }else{
+    toast("Contraseña incorrecta");
+  }
+  render();
+}
+function adminLogout(){
+  STATE.isAdmin=false;
+  lsDel("adminSession");
+  toast("Sesión de administrador cerrada");
+  render();
+}
+/* El admin restablece contraseña de un usuario */
+function adminResetUserPassword(){
+  if(!STATE.isAdmin){ toast("Solo el administrador puede hacer esto"); return; }
+  const name=document.getElementById("resetName").value.trim();
+  const newPass=document.getElementById("resetNewPass").value;
+  if(!name||!newPass){ toast("Completa el nombre y la nueva contraseña"); return; }
+  const key="user:"+slug(name);
+  const raw=lsGet(key);
+  if(!raw){ toast('No existe la cuenta "'+name+'"'); return; }
+  let u; try{ u=JSON.parse(raw); }catch(e){ toast("Error al leer la cuenta"); return; }
+  u.password=newPass;
+  lsSet(key,JSON.stringify(u));
+  toast('Contraseña de "'+u.name+'" restablecida');
+  document.getElementById("resetName").value="";
+  document.getElementById("resetNewPass").value="";
+}
+
+/* =====================================================================
+   GANADOR DE UNA LLAVE
+   ===================================================================== */
+function winnerOf(t,roundKey,seriesId){
+  const s=(STATE.brackets[t][roundKey]||[]).find(x=>x.id===seriesId);
+  const act=(STATE.results[t]||{})[roundKey+"-"+seriesId];
+  if(!s||!act||!act.clasificado) return null;
+  if(act.clasificado===s.home) return {name:s.home,seed:s.homeSeed};
+  if(act.clasificado===s.away) return {name:s.away,seed:s.awaySeed};
+  return {name:act.clasificado,seed:null};
+}
+
+/* =====================================================================
+   PUNTUACIÓN
+   ===================================================================== */
 function matchPoints(ph,pa,ah,aa){
-  if(ph===null||pa===null||ah===undefined||ah===null||aa===null) return 0;
-  if(ph===ah && pa===aa) return 8;
-  const pd = ph-pa, ad = ah-aa;
-  if(pd===ad) return 2;
-  const sgn = x => x>0?1:(x<0?-1:0);
-  if(sgn(pd)===sgn(ad)) return 4;
+  if(ph==null||pa==null||ah==null||aa==null) return 0;
+  if(ph===ah&&pa===aa) return 8;
+  if((ph-pa)===(ah-aa)) return 2;
+  const sgn=x=>x>0?1:(x<0?-1:0);
+  if(sgn(ph-pa)===sgn(ah-aa)) return 4;
   return 0;
 }
-
-// Returns {total, exact, clasOk, diffOk, perfect} contribution for one series
-function scoreSeries(round, pred, act){
-  if(!pred || !act) return null;
-  const out = {ida:0, vuelta:0, clas:0, perfect:0, exactCount:0, diffCount:0};
+function scoreSeries(round,pred,act){
+  if(!pred||!act) return null;
+  const out={ida:0,vuelta:0,clas:0,perfect:0,exactCount:0,diffCount:0};
   if(round.vuelta){
     if(act.idaH==null||act.idaA==null||act.vueltaH==null||act.vueltaA==null||!act.clasificado) return null;
-    out.ida = matchPoints(pred.idaH,pred.idaA,act.idaH,act.idaA);
-    out.vuelta = matchPoints(pred.vueltaH,pred.vueltaA,act.vueltaH,act.vueltaA);
+    out.ida=matchPoints(pred.idaH,pred.idaA,act.idaH,act.idaA);
+    out.vuelta=matchPoints(pred.vueltaH,pred.vueltaA,act.vueltaH,act.vueltaA);
     if(out.ida===8) out.exactCount++;
     if(out.vuelta===8) out.exactCount++;
     if(out.ida===2) out.diffCount++;
     if(out.vuelta===2) out.diffCount++;
-    out.clas = (pred.clasificado && act.clasificado && pred.clasificado.trim().toLowerCase()===act.clasificado.trim().toLowerCase()) ? 10 : 0;
-    out.perfect = (out.ida===8 && out.vuelta===8 && out.clas===10) ? 5 : 0;
+    out.clas=(pred.clasificado&&act.clasificado&&pred.clasificado.trim().toLowerCase()===act.clasificado.trim().toLowerCase())?10:0;
+    out.perfect=(out.ida===8&&out.vuelta===8&&out.clas===10)?5:0;
   }else{
     if(act.unicoH==null||act.unicoA==null||!act.clasificado) return null;
-    out.ida = matchPoints(pred.unicoH,pred.unicoA,act.unicoH,act.unicoA);
+    out.ida=matchPoints(pred.unicoH,pred.unicoA,act.unicoH,act.unicoA);
     if(out.ida===8) out.exactCount++;
     if(out.ida===2) out.diffCount++;
-    out.clas = (pred.clasificado && act.clasificado && pred.clasificado.trim().toLowerCase()===act.clasificado.trim().toLowerCase()) ? 10 : 0;
-    out.perfect = (out.ida===8 && out.clas===10) ? 5 : 0;
+    out.clas=(pred.clasificado&&act.clasificado&&pred.clasificado.trim().toLowerCase()===act.clasificado.trim().toLowerCase())?10:0;
+    out.perfect=(out.ida===8&&out.clas===10)?5:0;
   }
-  const base = out.ida + out.vuelta + out.clas + out.perfect;
-  out.total = base * round.mult;
-  out.clasOk = out.clas>0 ? 1:0;
+  const base=out.ida+out.vuelta+out.clas+out.perfect;
+  out.total=base*round.mult;
+  out.clasOk=out.clas>0?1:0;
   return out;
 }
-
 function computeLeaderboard(t){
-  const bracket = STATE.brackets[t];
-  const results = STATE.results[t] || {};
-  const rounds = TOURNEYS[t].rounds;
-  const rows = (STATE.allPreds[t]||[]).map(p=>{
-    let total=0, exact=0, clasOk=0, diffOk=0, semiFinalPts=0;
-    rounds.forEach(r=>{
-      (bracket[r.key]||[]).forEach(series=>{
-        const id = r.key+"-"+series.id;
-        const pred = p.entries[id];
-        const act = results[id];
-        const sc = scoreSeries(r, pred, act);
+  const rows=(STATE.allPreds[t]||[]).map(p=>{
+    let total=0,exact=0,clasOk=0,diffOk=0,semiFinalPts=0;
+    TOURNEYS[t].rounds.forEach(r=>{
+      (STATE.brackets[t][r.key]||[]).forEach(series=>{
+        const id=r.key+"-"+series.id;
+        const sc=scoreSeries(r,p.entries[id],(STATE.results[t]||{})[id]);
         if(sc){
-          total += sc.total;
-          exact += sc.exactCount;
-          clasOk += sc.clasOk;
-          diffOk += sc.diffCount;
-          if(r.key==="semifinal"||r.key==="final") semiFinalPts += sc.total;
+          total+=sc.total; exact+=sc.exactCount; clasOk+=sc.clasOk; diffOk+=sc.diffCount;
+          if(r.key==="semifinal"||r.key==="final") semiFinalPts+=sc.total;
         }
       });
     });
-    return {name:p.displayName||"(sin nombre)", total, exact, clasOk, diffOk, semiFinalPts};
+    return {name:p.displayName||"(sin nombre)",total,exact,clasOk,diffOk,semiFinalPts};
   });
-  rows.sort((a,b)=>
-    b.total-a.total ||
-    b.exact-a.exact ||
-    b.clasOk-a.clasOk ||
-    b.semiFinalPts-a.semiFinalPts ||
-    b.diffOk-a.diffOk
-  );
+  rows.sort((a,b)=>b.total-a.total||b.exact-a.exact||b.clasOk-a.clasOk||b.semiFinalPts-a.semiFinalPts||b.diffOk-a.diffOk);
   return rows;
 }
 
-/* ======================= UI HELPERS ======================= */
-function toast(msg){
-  const el = document.getElementById("toast");
-  el.textContent = msg;
-  el.classList.add("show");
-  setTimeout(()=>el.classList.remove("show"), 2200);
-}
-function esc(s){ return (s||"").replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+/* =====================================================================
+   UI HELPERS
+   ===================================================================== */
+function toast(msg){ const el=document.getElementById("toast"); el.textContent=msg; el.classList.add("show"); setTimeout(()=>el.classList.remove("show"),2200); }
+function esc(s){ return (s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+function inp(style=""){ return `style="width:100%;padding:8px 10px;border-radius:7px;background:var(--ink);border:1px solid var(--line);color:var(--chalk);font-size:14px;${style}"`; }
 
-/* ======================= RENDER: ROOT ======================= */
-async function render(){
-  const app = document.getElementById("app");
-  const t = STATE.tournament;
-
-  const identityHtml = STATE.loggedIn ? `
+/* =====================================================================
+   RENDER RAÍZ
+   ===================================================================== */
+function render(){
+  const app=document.getElementById("app");
+  const t=STATE.tournament;
+  const identityHtml=STATE.loggedIn?`
     <div class="me-bar">
-      <div class="whoami">🔑 Pronosticando como <b>${esc(STATE.me)}</b> <span class="tag">(${esc(STATE.realName)})</span></div>
+      <div class="whoami">🔑 Jugando como <b>${esc(STATE.me)}</b></div>
       <button class="btn ghost" style="padding:7px 12px;margin-left:auto" onclick="userLogout()">Cerrar sesión</button>
     </div>
-  ` : `
+  `:`
     <div class="me-bar">
-      <div class="field-group"><span>Nombre real</span><input id="regReal" type="text" placeholder="Ej: Pedro Pérez"></div>
-      <div class="field-group"><span>Apodo en la apuesta</span><input id="regNick" type="text" placeholder="Ej: Perico"></div>
-      <div class="field-group"><span>Correo electrónico</span><input id="regEmail" type="email" placeholder="tucorreo@ejemplo.com"></div>
+      <div class="field-group"><span>Tu nombre (aparecerá en el ranking)</span><input id="regName" type="text" placeholder="Ej: Pedro"></div>
       <div class="field-group"><span>Contraseña</span><input id="regPass" type="password" placeholder="••••••"></div>
-      <button class="btn" style="padding:7px 12px;align-self:flex-end" onclick="userAuth()">Ingresar / Registrarme</button>
-      <button class="btn ghost" style="padding:7px 12px;align-self:flex-end" onclick="toggleForgotUser()">¿Olvidaste tu contraseña?</button>
-      <span class="tag">Si tu apodo ya existe, se te pedirá la misma contraseña. El correo es obligatorio para poder recuperarla si la olvidas.</span>
-      <div id="forgotUserBox" style="display:none;width:100%;gap:8px;align-items:flex-end;flex-wrap:wrap;border-top:1px dashed var(--line);padding-top:10px;margin-top:4px;">
-        <div class="field-group"><span>Tu apodo</span><input id="forgotNick" type="text" placeholder="Ej: Perico"></div>
-        <button class="btn ghost" style="padding:7px 12px" onclick="forgotUserPassword()">Enviarme mi contraseña por correo</button>
-        <span class="tag">Se abrirá un borrador en tu app de correo, hacia el e-mail con el que te registraste.</span>
-      </div>
+      <button class="btn" style="padding:8px 14px;align-self:flex-end" onclick="userAuth()">Entrar / Registrarme</button>
+      <p class="tag">Si tu nombre ya existe, se te pedirá la misma contraseña. Si la olvidaste, pídele al administrador que te la restablezca desde la pestaña ⚙ Admin.</p>
     </div>
   `;
-
-  app.innerHTML = `
+  app.innerHTML=`
     <div class="hero">
       <span class="eyebrow">Amigos · Temporada 2026</span>
       <h1>Polla CONMEBOL 2026</h1>
       <p class="sub">Pronósticos de Copa Libertadores y Copa Sudamericana entre amigos. Marcador de ida, marcador de vuelta y quién clasifica — cada ronda vale más que la anterior.</p>
     </div>
-
     <div class="ladder">
       <div class="rung"><span class="name">Octavos</span><span class="mult">×1</span></div>
       <div class="rung"><span class="name">Cuartos</span><span class="mult">×1.25</span></div>
       <div class="rung"><span class="name">Semifinal</span><span class="mult">×1.5</span></div>
       <div class="rung"><span class="name">Final</span><span class="mult">×2</span></div>
     </div>
-
     ${identityHtml}
-
     <div class="tsel">
-      <button class="${t==='CL'?'on':''}" onclick="switchTourney('CL')">🏆 Libertadores<small>Final 28 nov · Montevideo</small></button>
-      <button class="${t==='CS'?'on':''}" onclick="switchTourney('CS')">🥈 Sudamericana<small>Final 21 nov · Barranquilla</small></button>
+      <button class="${t==="CL"?"on":""}" onclick="switchTourney('CL')">🏆 Libertadores<small>Final 28 nov · Montevideo</small></button>
+      <button class="${t==="CS"?"on":""}" onclick="switchTourney('CS')">🥈 Sudamericana<small>Final 21 nov · Barranquilla</small></button>
     </div>
-
     <div class="tabs">
-      ${tabBtn("cuadro","Cuadro")}
-      ${tabBtn("pronosticar","Pronosticar")}
-      ${tabBtn("resultados","Resultados")}
-      ${tabBtn("tabla","Tabla")}
-      ${tabBtn("reglas","Reglas")}
-      ${tabBtn("admin", STATE.isAdmin ? "⚙ Admin ●" : "⚙ Admin")}
+      ${TAB_KEYS.map(k=>tabBtn(k,k==="admin"?(STATE.isAdmin?"⚙ Admin ●":"⚙ Admin"):k.charAt(0).toUpperCase()+k.slice(1))).join("")}
     </div>
-
     <div id="tabContent">Cargando…</div>
-
-    <footer>Datos compartidos entre todos los participantes del grupo · Hecho para apostar entre amigos, sin plata real de por medio (a menos que ustedes lo decidan 😉)</footer>
+    <footer>Todos los datos se guardan en tu navegador (localStorage) y son compartidos en el mismo dispositivo. Para compartir con amigos, publícala en Vercel — cada uno accede desde su dispositivo y sus datos quedan guardados ahí. · Hecho para apostar entre amigos 🏆</footer>
   `;
-  await renderTab();
+  renderTab();
 }
-function tabBtn(key,label){
-  return `<button class="tab ${STATE.tab===key?'active':''}" onclick="switchTab('${key}')">${label}</button>`;
-}
-async function switchTourney(t){ STATE.tournament=t; await render(); }
-async function switchTab(tab){ STATE.tab=tab; await renderTab(); syncTabsUI(); }
-function syncTabsUI(){
-  document.querySelectorAll(".tab").forEach(b=>b.classList.remove("active"));
-  const idx = TAB_KEYS.indexOf(STATE.tab);
-  if(idx>=0) document.querySelectorAll(".tab")[idx].classList.add("active");
+function tabBtn(key,label){ return `<button class="tab ${STATE.tab===key?"active":""}" onclick="switchTab('${key}')">${label}</button>`; }
+function switchTourney(t){ STATE.tournament=t; render(); }
+function switchTab(tab){ STATE.tab=tab; renderTab(); syncTabsUI(); }
+function syncTabsUI(){ document.querySelectorAll(".tab").forEach((b,i)=>b.classList.toggle("active",TAB_KEYS[i]===STATE.tab)); }
+
+function renderTab(){
+  const el=document.getElementById("tabContent");
+  if(!el) return;
+  if(STATE.tab==="cuadro") el.innerHTML=renderCuadro();
+  else if(STATE.tab==="pronosticar") el.innerHTML=renderPronosticar();
+  else if(STATE.tab==="resultados") el.innerHTML=renderResultados();
+  else if(STATE.tab==="tabla") el.innerHTML=renderTabla();
+  else if(STATE.tab==="reglas") el.innerHTML=renderReglas();
+  else if(STATE.tab==="admin") el.innerHTML=renderAdmin();
 }
 
-async function renderTab(){
-  const el = document.getElementById("tabContent");
-  el.innerHTML = "Cargando…";
-  if(STATE.tab==="cuadro") el.innerHTML = renderCuadro();
-  else if(STATE.tab==="pronosticar") el.innerHTML = await renderPronosticar();
-  else if(STATE.tab==="resultados") el.innerHTML = renderResultados();
-  else if(STATE.tab==="tabla") el.innerHTML = await renderTabla();
-  else if(STATE.tab==="reglas") el.innerHTML = renderReglas();
-  else if(STATE.tab==="admin") el.innerHTML = await renderAdmin();
-}
-
-/* ======================= TAB: CUADRO (config equipos) ======================= */
+/* =====================================================================
+   TAB: CUADRO
+   ===================================================================== */
 function renderCuadro(){
-  const t = STATE.tournament;
-  const bracket = STATE.brackets[t];
-  const rounds = TOURNEYS[t].rounds;
-  const admin = STATE.isAdmin;
-  let cols = rounds.map(r=>{
-    const dateStr = r.vuelta ? `Ida: ${r.dates.ida} · Vuelta: ${r.dates.vuelta}` : r.dates.unico;
-    const series = bracket[r.key].map(s=>{
-      const homeBadge = s.homeSeed!=null ? ` <span class="muted">#${s.homeSeed}</span>` : "";
-      const awayBadge = s.awaySeed!=null ? ` <span class="muted">#${s.awaySeed}</span>` : "";
-      if(admin){
-        return `
-        <div class="series">
-          <div class="row">
-            <input class="team" data-round="${r.key}" data-id="${s.id}" data-side="home" value="${esc(s.home)}" placeholder="Equipo local (ida)">${homeBadge}
-          </div>
-          <div class="vs">vs</div>
-          <div class="row">
-            <input class="team" data-round="${r.key}" data-id="${s.id}" data-side="away" value="${esc(s.away)}" placeholder="Equipo visitante (ida)">${awayBadge}
-          </div>
-        </div>`;
-      }
-      return `
-        <div class="series">
-          <div class="row"><b>${esc(s.home)||'—'}</b>${homeBadge}</div>
-          <div class="vs">vs</div>
-          <div class="row"><b>${esc(s.away)||'—'}</b>${awayBadge}</div>
-        </div>`;
+  const t=STATE.tournament, bracket=STATE.brackets[t], rounds=TOURNEYS[t].rounds, admin=STATE.isAdmin;
+  const cols=rounds.map(r=>{
+    const dateStr=r.vuelta?`Ida: ${r.dates.ida} · Vuelta: ${r.dates.vuelta}`:r.dates.unico;
+    const series=bracket[r.key].map(s=>{
+      const hb=s.homeSeed!=null?` <span class="muted">#${s.homeSeed}</span>`:"";
+      const ab=s.awaySeed!=null?` <span class="muted">#${s.awaySeed}</span>`:"";
+      if(admin) return `<div class="series">
+        <div class="row"><input class="team" data-round="${r.key}" data-id="${s.id}" data-side="home" value="${esc(s.home)}" placeholder="Local en la ida">${hb}</div>
+        <div class="vs">vs (ida)</div>
+        <div class="row"><input class="team" data-round="${r.key}" data-id="${s.id}" data-side="away" value="${esc(s.away)}" placeholder="Visitante en la ida">${ab}</div>
+      </div>`;
+      return `<div class="series">
+        <div class="row"><b>${esc(s.home)||"—"}</b>${hb}</div>
+        <div class="vs">vs</div>
+        <div class="row"><b>${esc(s.away)||"—"}</b>${ab}</div>
+      </div>`;
     }).join("");
     return `<div class="bcol"><h3>${r.label}</h3><div class="dates">${dateStr}</div>${series}</div>`;
   }).join("");
-
-  const adminNote = admin ? "" : `<div class="readonly-note">Solo el administrador puede editar el cuadro. Si eres el organizador, inicia sesión en la pestaña "⚙ Admin".</div>`;
-  const csPreviaBtn = (t==='CS' && admin) ? `<button class="btn ghost" onclick="advancePreviaToOctavos()">Avanzar Fase Previa → Octavos</button>` : "";
-  const editControls = admin ? `
-      <div class="btn-row">
-        <button class="btn" onclick="saveCuadro()">Guardar equipos</button>
-        <button class="btn ghost" onclick="reseedOctavos()">🔄 Recargar Octavos con equipos oficiales</button>
-        ${csPreviaBtn}
-        <button class="btn ghost" onclick="advanceRound('octavos')">Avanzar Octavos → Cuartos</button>
-        <button class="btn ghost" onclick="advanceRound('cuartos')">Avanzar Cuartos → Semifinal</button>
-        <button class="btn ghost" onclick="advanceRound('semifinal')">Avanzar Semifinal → Final</button>
-      </div>
-      <div class="btn-row">
-        <button class="btn ghost" onclick="resetTourney()">⚠ Reiniciar este torneo (equipos y resultados)</button>
-      </div>` : "";
-
-  return `
-    <div class="card">
-      <h2>Organizar el cuadro — ${TOURNEYS[t].label}</h2>
-      ${adminNote}
-      <p class="hint">El número junto a cada equipo (#) es su posición en la tabla de seeds: en cada llave, el equipo con el número más alto juega de local en la ida (el de número más bajo juega de local en la vuelta). Esa regla se aplica automáticamente al avanzar de ronda.${t==='CS' ? ' En Octavos, el lado del clasificado directo (seeds 1-8) ya está cargado; el otro lado se completa con "Avanzar Fase Previa → Octavos" una vez que termine esa fase.' : ''}</p>
-      <div class="bracket-cols">${cols}</div>
-      ${editControls}
+  const adminNote=admin?"":`<div class="readonly-note">Solo el administrador puede editar el cuadro. Iniciá sesión en ⚙ Admin.</div>`;
+  const csPreviaBtn=(t==="CS"&&admin)?`<button class="btn ghost" onclick="advancePreviaToOctavos()">Avanzar Fase Previa → Octavos</button>`:"";
+  const editControls=admin?`
+    <div class="btn-row">
+      <button class="btn" onclick="saveCuadro()">Guardar equipos</button>
+      <button class="btn ghost" onclick="reseedOctavos()">🔄 Recargar Octavos oficiales</button>
+      ${csPreviaBtn}
+      <button class="btn ghost" onclick="advanceRound('octavos')">Avanzar Octavos → Cuartos</button>
+      <button class="btn ghost" onclick="advanceRound('cuartos')">Avanzar Cuartos → Semifinal</button>
+      <button class="btn ghost" onclick="advanceRound('semifinal')">Avanzar Semifinal → Final</button>
     </div>
-  `;
+    <div class="btn-row"><button class="btn ghost" onclick="resetTourney()">⚠ Reiniciar torneo</button></div>`:"";
+  return `<div class="card">
+    <h2>Cuadro — ${TOURNEYS[t].label}</h2>
+    ${adminNote}
+    <p class="hint">#N = número de seed. El equipo con seed más alto juega de local en la ida.</p>
+    <div class="bracket-cols">${cols}</div>${editControls}</div>`;
 }
-async function saveCuadro(){
+function saveCuadro(){
   if(!STATE.isAdmin){ toast("Solo el administrador puede editar el cuadro"); return; }
-  const t = STATE.tournament;
-  const bracket = JSON.parse(JSON.stringify(STATE.brackets[t]));
-  document.querySelectorAll('#tabContent input.team').forEach(inp=>{
-    const r = inp.dataset.round, id = +inp.dataset.id, side = inp.dataset.side;
-    const item = bracket[r].find(x=>x.id===id);
-    if(item) item[side] = inp.value.trim();
+  const t=STATE.tournament, bracket=JSON.parse(JSON.stringify(STATE.brackets[t]));
+  document.querySelectorAll("#tabContent input.team").forEach(inp=>{
+    const r=inp.dataset.round,id=+inp.dataset.id,side=inp.dataset.side;
+    const item=bracket[r].find(x=>x.id===id);
+    if(item) item[side]=inp.value.trim();
   });
-  await saveBracket(t, bracket);
-  toast("Equipos guardados");
-  await renderTab();
+  saveBracket(t,bracket); toast("Equipos guardados"); renderTab();
 }
-const NEXT_ROUND = {octavos:"cuartos", cuartos:"semifinal", semifinal:"final"};
-async function advanceRound(fromKey){
+const NEXT_ROUND={previa:"octavos",octavos:"cuartos",cuartos:"semifinal",semifinal:"final"};
+function advanceRound(fromKey){
   if(!STATE.isAdmin){ toast("Solo el administrador puede avanzar el cuadro"); return; }
-  const t = STATE.tournament;
-  const toKey = NEXT_ROUND[fromKey];
-  const bracket = STATE.brackets[t];
-  const fromSeries = bracket[fromKey];
-  const toSeries = bracket[toKey];
-  let missing = 0;
+  const t=STATE.tournament, toKey=NEXT_ROUND[fromKey];
+  const bracket=STATE.brackets[t], fromSeries=bracket[fromKey], toSeries=bracket[toKey];
+  let missing=0;
   for(let i=0;i<toSeries.length;i++){
-    const s1 = fromSeries[i*2], s2 = fromSeries[i*2+1];
-    const w1 = winnerOf(t, fromKey, s1.id);
-    const w2 = winnerOf(t, fromKey, s2.id);
-    if(!w1 || !w2){ missing++; continue; }
-    // el equipo con el número de seed más alto arranca de local (ida)
-    const seed1 = w1.seed==null ? -1 : w1.seed, seed2 = w2.seed==null ? -1 : w2.seed;
-    const homeW = seed1>=seed2 ? w1 : w2;
-    const awayW = seed1>=seed2 ? w2 : w1;
-    toSeries[i].home = homeW.name; toSeries[i].homeSeed = homeW.seed;
-    toSeries[i].away = awayW.name; toSeries[i].awaySeed = awayW.seed;
+    const s1=fromSeries[i*2], s2=fromSeries[i*2+1];
+    const w1=winnerOf(t,fromKey,s1.id), w2=winnerOf(t,fromKey,s2.id);
+    if(!w1||!w2){ missing++; continue; }
+    const seed1=w1.seed==null?-1:w1.seed, seed2=w2.seed==null?-1:w2.seed;
+    const homeW=seed1>=seed2?w1:w2, awayW=seed1>=seed2?w2:w1;
+    toSeries[i].home=homeW.name; toSeries[i].homeSeed=homeW.seed;
+    toSeries[i].away=awayW.name; toSeries[i].awaySeed=awayW.seed;
   }
-  if(missing){ toast(`Faltan resultados de ${missing} llave(s) anterior(es) para completar el avance`); }
-  await saveBracket(t, bracket);
-  toast("Cuadro actualizado con los clasificados");
-  await renderTab();
+  if(missing) toast(`Faltan resultados de ${missing} llave(s)`);
+  saveBracket(t,bracket); toast("Cuadro actualizado"); renderTab();
 }
-async function advancePreviaToOctavos(){
+function advancePreviaToOctavos(){
   if(!STATE.isAdmin){ toast("Solo el administrador puede avanzar el cuadro"); return; }
-  const t = "CS";
-  const bracket = STATE.brackets[t];
-  let missing = 0;
-  CS_PREVIA_FACES.forEach((topSeed, i)=>{
-    const w = winnerOf(t, "previa", i);
+  const t="CS", bracket=STATE.brackets[t]; let missing=0;
+  CS_PREVIA_FACES.forEach((topSeed,i)=>{
+    const w=winnerOf(t,"previa",i);
     if(!w){ missing++; return; }
-    const idx = bracket.octavos.findIndex(s=>s.awaySeed===topSeed);
-    if(idx>=0){ bracket.octavos[idx].home = w.name; bracket.octavos[idx].homeSeed = w.seed; }
+    const idx=bracket.octavos.findIndex(s=>s.awaySeed===topSeed);
+    if(idx>=0){ bracket.octavos[idx].home=w.name; bracket.octavos[idx].homeSeed=w.seed; }
   });
-  if(missing){ toast(`Faltan resultados de ${missing} llave(s) de la Fase Previa`); }
-  await saveBracket(t, bracket);
-  toast("Octavos actualizado con los clasificados de la Fase Previa");
-  await renderTab();
+  if(missing) toast(`Faltan resultados de ${missing} llave(s) de Fase Previa`);
+  saveBracket(t,bracket); toast("Octavos actualizado"); renderTab();
 }
-async function resetTourney(){
+function reseedOctavos(){
+  if(!STATE.isAdmin){ toast("Solo el administrador puede hacer esto"); return; }
+  const t=STATE.tournament, bracket=STATE.brackets[t];
+  if(t==="CL"){
+    buildSeedSeries(CL_OCTAVOS_PAIRS,CL_SEEDS).forEach((s,i)=>{ bracket.octavos[i]={id:i,...s}; });
+  }else{
+    buildSeedSeries(CS_PREVIA_PAIRS,CS_SEEDS).forEach((s,i)=>{ bracket.previa[i]={id:i,...s}; });
+    CS_PREVIA_FACES.forEach((topSeed,i)=>{ bracket.octavos[i]={id:i,home:"",away:CS_SEEDS[topSeed],homeSeed:null,awaySeed:topSeed}; });
+  }
+  saveBracket(t,bracket); toast("Octavos recargado con equipos oficiales"); renderTab();
+}
+function resetTourney(){
   if(!STATE.isAdmin){ toast("Solo el administrador puede reiniciar el torneo"); return; }
-  if(!confirm("Esto borra todos los equipos, fechas editadas y resultados de este torneo. ¿Continuar?")) return;
-  const t = STATE.tournament;
-  const def = defaultBracket(t);
-  await saveBracket(t, def);
-  await saveResults(t, {});
-  toast("Torneo reiniciado");
-  await renderTab();
+  if(!confirm("Esto borra todos los equipos y resultados de este torneo. ¿Continuar?")) return;
+  const t=STATE.tournament;
+  saveBracket(t,defaultBracket(t)); saveResults(t,{}); toast("Torneo reiniciado"); renderTab();
 }
 
-/* ======================= TAB: PRONOSTICAR ======================= */
-async function renderPronosticar(){
-  const t = STATE.tournament;
-  if(!STATE.loggedIn){
-    return `<div class="card"><h2>Antes de pronosticar</h2><p class="hint">Regístrate o inicia sesión arriba (nombre real, apodo en la apuesta y contraseña) para poder cargar tus predicciones.</p></div>`;
-  }
-  const bracket = STATE.brackets[t];
-  const results = STATE.results[t] || {};
-  const myPred = await loadMyPrediction(t, STATE.me);
-  STATE._myPred = myPred;
-
-  let anySeries = false;
-  const rounds = TOURNEYS[t].rounds;
-  let html = `<div class="card"><h2>Tus pronósticos — ${TOURNEYS[t].label}</h2><p class="hint">Marcador de ida, marcador de vuelta (si aplica) y quién clasifica. Una vez que arranca la fase o se carga el resultado real de una llave, tu pronóstico queda bloqueado.</p></div>`;
-
-  rounds.forEach(r=>{
-    const seriesList = bracket[r.key].filter(s=>s.home && s.away);
+/* =====================================================================
+   TAB: PRONOSTICAR
+   Muestra para cada llave:
+     IDA:    equipo home (seed alto) vs equipo away (seed bajo)
+     VUELTA: equipo away (seed bajo) vs equipo home (seed alto)
+   ===================================================================== */
+function renderPronosticar(){
+  if(!STATE.loggedIn) return `<div class="card"><h2>Antes de pronosticar</h2><p class="hint">Registrate o iniciá sesión con tu nombre y contraseña arriba para cargar tus predicciones.</p></div>`;
+  const t=STATE.tournament, bracket=STATE.brackets[t], results=STATE.results[t]||{};
+  const myPred=loadMyPrediction(t,STATE.me);
+  STATE._myPred=myPred;
+  let anySeries=false;
+  let html=`<div class="card"><h2>Tus pronósticos — ${TOURNEYS[t].label}</h2><p class="hint">El equipo con seed más alto juega de local en la ida y de visitante en la vuelta. Una vez que arranca la fase, tu pronóstico queda bloqueado.</p></div>`;
+  TOURNEYS[t].rounds.forEach(r=>{
+    const seriesList=bracket[r.key].filter(s=>s.home&&s.away);
     if(!seriesList.length) return;
-    anySeries = true;
-    const cards = seriesList.map(s=>{
-      const id = r.key+"-"+s.id;
-      const act = results[id];
-      const resultDone = !!(act && ((r.vuelta && act.idaH!=null && act.vueltaH!=null && act.clasificado) || (!r.vuelta && act.unicoH!=null && act.clasificado)));
-      const dateLocked = isRoundLocked(t, r) && !resultDone;
-      const locked = resultDone || dateLocked;
-      const pred = myPred.entries[id] || {};
-      const opts = `<option value="">— elegir —</option><option value="${esc(s.home)}" ${pred.clasificado===s.home?'selected':''}>${esc(s.home)}</option><option value="${esc(s.away)}" ${pred.clasificado===s.away?'selected':''}>${esc(s.away)}</option>`;
+    anySeries=true;
+    const cards=seriesList.map(s=>{
+      const id=r.key+"-"+s.id, act=results[id], pred=myPred.entries[id]||{};
+      const resultDone=!!(act&&((r.vuelta&&act.idaH!=null&&act.vueltaH!=null&&act.clasificado)||(!r.vuelta&&act.unicoH!=null&&act.clasificado)));
+      const dateLocked=isRoundLocked(t,r)&&!resultDone;
+      const locked=resultDone||dateLocked;
+      const opts=`<option value="">— elegir —</option><option value="${esc(s.home)}" ${pred.clasificado===s.home?"selected":""}>${esc(s.home)}</option><option value="${esc(s.away)}" ${pred.clasificado===s.away?"selected":""}>${esc(s.away)}</option>`;
 
-      let legsHtml = "";
+      // Ida: home (seed alto) es local; Vuelta: away (seed bajo) es local → se invierten los roles
+      let legsHtml="";
       if(r.vuelta){
-        legsHtml = `
-          <div class="leg"><span class="leg-label">Ida</span>
+        legsHtml=`
+          <div class="leg">
+            <span class="leg-label">🏠 IDA — Local: ${esc(s.home)}</span>
+            <div class="leg-teams">${esc(s.home)} vs ${esc(s.away)}</div>
             <div class="score-pair">
-              <input type="number" min="0" class="score-box pinp" data-id="${id}" data-field="idaH" ${locked?'disabled':''} value="${pred.idaH ?? ''}">
+              <span style="font-size:12px;color:var(--chalk-dim);min-width:30px">${esc(s.home.split(" ")[0])}</span>
+              <input type="number" min="0" class="score-box pinp" data-id="${id}" data-field="idaH" ${locked?"disabled":""} value="${pred.idaH??''}">
               <span class="score-dash">–</span>
-              <input type="number" min="0" class="score-box pinp" data-id="${id}" data-field="idaA" ${locked?'disabled':''} value="${pred.idaA ?? ''}">
+              <input type="number" min="0" class="score-box pinp" data-id="${id}" data-field="idaA" ${locked?"disabled":""} value="${pred.idaA??''}">
+              <span style="font-size:12px;color:var(--chalk-dim);min-width:30px">${esc(s.away.split(" ")[0])}</span>
             </div>
           </div>
-          <div class="leg"><span class="leg-label">Vuelta</span>
+          <div class="leg">
+            <span class="leg-label">🏠 VUELTA — Local: ${esc(s.away)}</span>
+            <div class="leg-teams">${esc(s.away)} vs ${esc(s.home)}</div>
             <div class="score-pair">
-              <input type="number" min="0" class="score-box pinp" data-id="${id}" data-field="vueltaH" ${locked?'disabled':''} value="${pred.vueltaH ?? ''}">
+              <span style="font-size:12px;color:var(--chalk-dim);min-width:30px">${esc(s.away.split(" ")[0])}</span>
+              <input type="number" min="0" class="score-box pinp" data-id="${id}" data-field="vueltaH" ${locked?"disabled":""} value="${pred.vueltaH??''}">
               <span class="score-dash">–</span>
-              <input type="number" min="0" class="score-box pinp" data-id="${id}" data-field="vueltaA" ${locked?'disabled':''} value="${pred.vueltaA ?? ''}">
+              <input type="number" min="0" class="score-box pinp" data-id="${id}" data-field="vueltaA" ${locked?"disabled":""} value="${pred.vueltaA??''}">
+              <span style="font-size:12px;color:var(--chalk-dim);min-width:30px">${esc(s.home.split(" ")[0])}</span>
             </div>
           </div>`;
       }else{
-        legsHtml = `
-          <div class="leg"><span class="leg-label">Partido único</span>
-            <div class="score-pair">
-              <input type="number" min="0" class="score-box pinp" data-id="${id}" data-field="unicoH" ${locked?'disabled':''} value="${pred.unicoH ?? ''}">
-              <span class="score-dash">–</span>
-              <input type="number" min="0" class="score-box pinp" data-id="${id}" data-field="unicoA" ${locked?'disabled':''} value="${pred.unicoA ?? ''}">
-            </div>
-          </div>`;
+        legsHtml=`<div class="leg">
+          <span class="leg-label">⚽ Partido único</span>
+          <div class="leg-teams">${esc(s.home)} vs ${esc(s.away)}</div>
+          <div class="score-pair">
+            <span style="font-size:12px;color:var(--chalk-dim);min-width:30px">${esc(s.home.split(" ")[0])}</span>
+            <input type="number" min="0" class="score-box pinp" data-id="${id}" data-field="unicoH" ${locked?"disabled":""} value="${pred.unicoH??''}">
+            <span class="score-dash">–</span>
+            <input type="number" min="0" class="score-box pinp" data-id="${id}" data-field="unicoA" ${locked?"disabled":""} value="${pred.unicoA??''}">
+            <span style="font-size:12px;color:var(--chalk-dim);min-width:30px">${esc(s.away.split(" ")[0])}</span>
+          </div>
+        </div>`;
       }
-
-      let pointsPill = "";
+      let pointsPill="";
       if(resultDone){
-        const sc = scoreSeries(r, pred, act);
-        if(sc) pointsPill = `<div class="points-pill">Ganaste ${sc.total} pts en esta llave</div>`;
-        else pointsPill = `<div class="points-pill">No pronosticaste esta llave</div>`;
+        const sc=scoreSeries(r,pred,act);
+        pointsPill=sc?`<div class="points-pill">Ganaste ${sc.total} pts en esta llave</div>`:`<div class="points-pill">No pronosticaste esta llave</div>`;
       }else if(dateLocked){
-        pointsPill = `<div class="points-pill">🔒 Apuestas cerradas para esta llave (${roundStatusLabel(t,r).replace(/^\S+\s/,'')})</div>`;
+        pointsPill=`<div class="points-pill">🔒 ${roundStatusLabel(t,r)}</div>`;
       }
-
-      return `
-        <div class="matchup ${locked?'locked':''}">
-          <div class="teams"><span>${esc(s.home)}</span><span class="vsx">VS</span><span>${esc(s.away)}</span></div>
-          ${legsHtml}
-          <div class="leg"><span class="leg-label">¿Quién clasifica?</span>
-            <select class="clas pinp" data-id="${id}" data-field="clasificado" ${locked?'disabled':''}>${opts}</select>
+      return `<div class="matchup ${locked?"locked":""}">
+        <div class="match-header">
+          <div class="match-title">${esc(s.home)} <span style="color:var(--chalk-dim);font-size:12px;font-weight:400">vs</span> ${esc(s.away)}</div>
+          <div style="font-family:var(--mono);font-size:11px;color:var(--chalk-dim)">
+            ${s.homeSeed!=null?`Seed #${s.homeSeed}`:""}${s.homeSeed!=null&&s.awaySeed!=null?" · ":""}${s.awaySeed!=null?`Seed #${s.awaySeed}`:""}
           </div>
-          ${pointsPill}
-        </div>`;
+        </div>
+        ${legsHtml}
+        <div class="leg"><span class="leg-label">¿Quién clasifica?</span>
+          <select class="clas pinp" data-id="${id}" data-field="clasificado" ${locked?"disabled":""}>${opts}</select>
+        </div>
+        ${pointsPill}
+      </div>`;
     }).join("");
-    html += `<div class="card"><h2>${r.label}</h2>${cards}</div>`;
+    html+=`<div class="card"><h2>${r.label}</h2>${cards}</div>`;
   });
-
-  if(!anySeries){
-    html += `<div class="empty">Todavía no hay equipos cargados en el cuadro. Pídele al organizador que complete la pestaña "Cuadro".</div>`;
-  }else{
-    html += `<div class="btn-row"><button class="btn" onclick="saveMyPreds()">Guardar mis pronósticos</button></div>`;
-  }
+  if(!anySeries) html+=`<div class="empty">Todavía no hay equipos cargados en el cuadro.</div>`;
+  else html+=`<div class="btn-row"><button class="btn" onclick="saveMyPreds()">Guardar mis pronósticos</button></div>`;
   return html;
 }
-async function saveMyPreds(){
-  if(!STATE.loggedIn){ toast("Inicia sesión primero"); return; }
-  const t = STATE.tournament;
-  const myPred = STATE._myPred || {displayName:STATE.me, entries:{}};
-  myPred.displayName = STATE.me;
-  document.querySelectorAll('#tabContent .pinp').forEach(inp=>{
-    const id = inp.dataset.id, field = inp.dataset.field;
-    if(!myPred.entries[id]) myPred.entries[id] = {};
-    if(inp.tagName==="SELECT"){
-      myPred.entries[id][field] = inp.value || null;
-    }else{
-      myPred.entries[id][field] = inp.value===""? null : parseInt(inp.value,10);
-    }
+function saveMyPreds(){
+  if(!STATE.loggedIn){ toast("Iniciá sesión primero"); return; }
+  const t=STATE.tournament, myPred=STATE._myPred||{displayName:STATE.me,entries:{}};
+  myPred.displayName=STATE.me;
+  document.querySelectorAll("#tabContent .pinp").forEach(inp=>{
+    const id=inp.dataset.id, field=inp.dataset.field;
+    if(!myPred.entries[id]) myPred.entries[id]={};
+    if(inp.tagName==="SELECT") myPred.entries[id][field]=inp.value||null;
+    else myPred.entries[id][field]=inp.value===""?null:parseInt(inp.value,10);
   });
-  await saveMyPrediction(t, STATE.me, myPred);
-  toast("Pronósticos guardados");
-  await renderTab();
+  saveMyPrediction(t,STATE.me,myPred); toast("Pronósticos guardados"); renderTab();
 }
 
-/* ======================= TAB: RESULTADOS (admin) ======================= */
+/* =====================================================================
+   TAB: RESULTADOS
+   También muestra ida/vuelta con la localía correcta.
+   ===================================================================== */
 function renderResultados(){
-  const t = STATE.tournament;
-  if(!STATE.isAdmin){
-    return `<div class="card"><h2>Resultados reales — ${TOURNEYS[t].label}</h2><div class="readonly-note">Solo el administrador puede cargar resultados reales. Si eres el organizador, inicia sesión en la pestaña "⚙ Admin".</div></div>`;
-  }
-  const bracket = STATE.brackets[t];
-  const results = STATE.results[t] || {};
-  const rounds = TOURNEYS[t].rounds;
-  let anySeries = false;
-
-  let html = `<div class="card"><h2>Cargar resultados reales — ${TOURNEYS[t].label}</h2><p class="hint">Esto lo completa el organizador a medida que se juegan los partidos. Al guardar, se recalcula automáticamente la tabla de posiciones.</p></div>`;
-
-  rounds.forEach(r=>{
-    const seriesList = bracket[r.key].filter(s=>s.home && s.away);
+  const t=STATE.tournament;
+  if(!STATE.isAdmin) return `<div class="card"><h2>Resultados — ${TOURNEYS[t].label}</h2><div class="readonly-note">Solo el administrador puede cargar resultados. Iniciá sesión en ⚙ Admin.</div></div>`;
+  const bracket=STATE.brackets[t], results=STATE.results[t]||{};
+  let anySeries=false;
+  let html=`<div class="card"><h2>Cargar resultados — ${TOURNEYS[t].label}</h2><p class="hint">Al guardar se recalcula la tabla de posiciones automáticamente.</p></div>`;
+  TOURNEYS[t].rounds.forEach(r=>{
+    const seriesList=bracket[r.key].filter(s=>s.home&&s.away);
     if(!seriesList.length) return;
-    anySeries = true;
-    const cards = seriesList.map(s=>{
-      const id = r.key+"-"+s.id;
-      const act = results[id] || {};
-      const opts = `<option value="">— elegir —</option><option value="${esc(s.home)}" ${act.clasificado===s.home?'selected':''}>${esc(s.home)}</option><option value="${esc(s.away)}" ${act.clasificado===s.away?'selected':''}>${esc(s.away)}</option>`;
-
-      let legsHtml = "";
+    anySeries=true;
+    const cards=seriesList.map(s=>{
+      const id=r.key+"-"+s.id, act=results[id]||{};
+      const opts=`<option value="">— elegir —</option><option value="${esc(s.home)}" ${act.clasificado===s.home?"selected":""}>${esc(s.home)}</option><option value="${esc(s.away)}" ${act.clasificado===s.away?"selected":""}>${esc(s.away)}</option>`;
+      let legsHtml="";
       if(r.vuelta){
-        legsHtml = `
-          <div class="leg"><span class="leg-label">Ida</span>
+        legsHtml=`
+          <div class="leg"><span class="leg-label">🏠 IDA — Local: ${esc(s.home)}</span>
+            <div class="leg-teams">${esc(s.home)} vs ${esc(s.away)}</div>
             <div class="score-pair">
-              <input type="number" min="0" class="score-box rinp" data-id="${id}" data-field="idaH" value="${act.idaH ?? ''}">
+              <span style="font-size:12px;color:var(--chalk-dim);min-width:30px">${esc(s.home.split(" ")[0])}</span>
+              <input type="number" min="0" class="score-box rinp" data-id="${id}" data-field="idaH" value="${act.idaH??''}">
               <span class="score-dash">–</span>
-              <input type="number" min="0" class="score-box rinp" data-id="${id}" data-field="idaA" value="${act.idaA ?? ''}">
+              <input type="number" min="0" class="score-box rinp" data-id="${id}" data-field="idaA" value="${act.idaA??''}">
+              <span style="font-size:12px;color:var(--chalk-dim);min-width:30px">${esc(s.away.split(" ")[0])}</span>
             </div>
           </div>
-          <div class="leg"><span class="leg-label">Vuelta</span>
+          <div class="leg"><span class="leg-label">🏠 VUELTA — Local: ${esc(s.away)}</span>
+            <div class="leg-teams">${esc(s.away)} vs ${esc(s.home)}</div>
             <div class="score-pair">
-              <input type="number" min="0" class="score-box rinp" data-id="${id}" data-field="vueltaH" value="${act.vueltaH ?? ''}">
+              <span style="font-size:12px;color:var(--chalk-dim);min-width:30px">${esc(s.away.split(" ")[0])}</span>
+              <input type="number" min="0" class="score-box rinp" data-id="${id}" data-field="vueltaH" value="${act.vueltaH??''}">
               <span class="score-dash">–</span>
-              <input type="number" min="0" class="score-box rinp" data-id="${id}" data-field="vueltaA" value="${act.vueltaA ?? ''}">
+              <input type="number" min="0" class="score-box rinp" data-id="${id}" data-field="vueltaA" value="${act.vueltaA??''}">
+              <span style="font-size:12px;color:var(--chalk-dim);min-width:30px">${esc(s.home.split(" ")[0])}</span>
             </div>
           </div>`;
       }else{
-        legsHtml = `
-          <div class="leg"><span class="leg-label">Partido único</span>
-            <div class="score-pair">
-              <input type="number" min="0" class="score-box rinp" data-id="${id}" data-field="unicoH" value="${act.unicoH ?? ''}">
-              <span class="score-dash">–</span>
-              <input type="number" min="0" class="score-box rinp" data-id="${id}" data-field="unicoA" value="${act.unicoA ?? ''}">
-            </div>
-          </div>`;
-      }
-      return `
-        <div class="matchup">
-          <div class="teams"><span>${esc(s.home)}</span><span class="vsx">VS</span><span>${esc(s.away)}</span></div>
-          ${legsHtml}
-          <div class="leg"><span class="leg-label">Clasificado real</span>
-            <select class="clas rinp" data-id="${id}" data-field="clasificado">${opts}</select>
+        legsHtml=`<div class="leg"><span class="leg-label">⚽ Partido único</span>
+          <div class="leg-teams">${esc(s.home)} vs ${esc(s.away)}</div>
+          <div class="score-pair">
+            <span style="font-size:12px;color:var(--chalk-dim);min-width:30px">${esc(s.home.split(" ")[0])}</span>
+            <input type="number" min="0" class="score-box rinp" data-id="${id}" data-field="unicoH" value="${act.unicoH??''}">
+            <span class="score-dash">–</span>
+            <input type="number" min="0" class="score-box rinp" data-id="${id}" data-field="unicoA" value="${act.unicoA??''}">
+            <span style="font-size:12px;color:var(--chalk-dim);min-width:30px">${esc(s.away.split(" ")[0])}</span>
           </div>
-          <label class="penales"><input type="checkbox" class="rinp" data-id="${id}" data-field="penales" ${act.penales?'checked':''}> Se definió por penales / alargue</label>
         </div>`;
+      }
+      return `<div class="matchup">
+        <div class="match-header"><div class="match-title">${esc(s.home)} vs ${esc(s.away)}</div></div>
+        ${legsHtml}
+        <div class="leg"><span class="leg-label">Clasificado real</span>
+          <select class="clas rinp" data-id="${id}" data-field="clasificado">${opts}</select>
+        </div>
+        <label class="penales"><input type="checkbox" class="rinp" data-id="${id}" data-field="penales" ${act.penales?"checked":""}> Se definió por penales / alargue</label>
+      </div>`;
     }).join("");
-    html += `<div class="card"><h2>${r.label}</h2>${cards}</div>`;
+    html+=`<div class="card"><h2>${r.label}</h2>${cards}</div>`;
   });
-
-  if(!anySeries){
-    html += `<div class="empty">Todavía no hay llaves con ambos equipos cargados en el cuadro.</div>`;
-  }else{
-    html += `<div class="btn-row"><button class="btn" onclick="saveResultsForm()">Guardar resultados</button></div>`;
-  }
+  if(!anySeries) html+=`<div class="empty">No hay llaves con ambos equipos cargados.</div>`;
+  else html+=`<div class="btn-row"><button class="btn" onclick="saveResultsForm()">Guardar resultados</button></div>`;
   return html;
 }
-async function saveResultsForm(){
+function saveResultsForm(){
   if(!STATE.isAdmin){ toast("Solo el administrador puede cargar resultados"); return; }
-  const t = STATE.tournament;
-  const results = JSON.parse(JSON.stringify(STATE.results[t] || {}));
-  document.querySelectorAll('#tabContent .rinp').forEach(inp=>{
-    const id = inp.dataset.id, field = inp.dataset.field;
-    if(!results[id]) results[id] = {};
-    if(inp.type==="checkbox"){
-      results[id][field] = inp.checked;
-    }else if(inp.tagName==="SELECT"){
-      results[id][field] = inp.value || null;
-    }else{
-      results[id][field] = inp.value===""? null : parseInt(inp.value,10);
-    }
+  const t=STATE.tournament, results=JSON.parse(JSON.stringify(STATE.results[t]||{}));
+  document.querySelectorAll("#tabContent .rinp").forEach(inp=>{
+    const id=inp.dataset.id, field=inp.dataset.field;
+    if(!results[id]) results[id]={};
+    if(inp.type==="checkbox") results[id][field]=inp.checked;
+    else if(inp.tagName==="SELECT") results[id][field]=inp.value||null;
+    else results[id][field]=inp.value===""?null:parseInt(inp.value,10);
   });
-  await saveResults(t, results);
-  toast("Resultados guardados");
-  await renderTab();
+  saveResults(t,results); toast("Resultados guardados"); renderTab();
 }
 
-/* ======================= TAB: ADMIN ======================= */
-async function renderAdmin(){
+/* =====================================================================
+   TAB: ADMIN
+   ===================================================================== */
+function renderAdmin(){
   if(!STATE.isAdmin){
-    const hasPass = await sGet("adminPassword", true);
-    if(!hasPass){
-      return `
-        <div class="card auth-card">
-          <h2>Crear acceso de administrador</h2>
-          <p class="hint">Todavía nadie configuró la contraseña de administrador para este grupo. Quien la cree será quien pueda editar el cuadro, cargar resultados, restablecer contraseñas de participantes y abrir/cerrar apuestas por fase.</p>
-          <div class="field-group" style="margin-bottom:8px"><span>Correo electrónico (para recuperar la contraseña)</span><input id="adminEmailSetup" type="email" style="width:100%;padding:8px;border-radius:7px;background:var(--ink);border:1px solid var(--line);color:var(--chalk)"></div>
-          <div class="field-group" style="margin-bottom:8px"><span>Nueva contraseña</span><input id="adminPass1" type="password" style="width:100%;padding:8px;border-radius:7px;background:var(--ink);border:1px solid var(--line);color:var(--chalk)"></div>
-          <div class="field-group" style="margin-bottom:12px"><span>Repetir contraseña</span><input id="adminPass2" type="password" style="width:100%;padding:8px;border-radius:7px;background:var(--ink);border:1px solid var(--line);color:var(--chalk)"></div>
-          <button class="btn" onclick="adminSetup()">Crear y entrar como administrador</button>
-        </div>`;
-    }
-    return `
-      <div class="card auth-card">
-        <h2>Acceso de administrador</h2>
-        <p class="hint">Ingresa la contraseña de administrador del grupo para editar el cuadro, cargar resultados, restablecer contraseñas de participantes y abrir/cerrar apuestas por fase.</p>
-        <div class="field-group" style="margin-bottom:12px"><span>Contraseña</span><input id="adminPassInput" type="password" style="width:100%;padding:8px;border-radius:7px;background:var(--ink);border:1px solid var(--line);color:var(--chalk)"></div>
-        <div class="btn-row">
-          <button class="btn" onclick="adminLogin()">Entrar</button>
-          <button class="btn ghost" onclick="forgotAdminPassword()">¿Olvidaste la contraseña de administrador?</button>
+    const hasPass=!!lsGet("adminPassword");
+    if(!hasPass) return `<div class="card auth-card">
+      <h2>Crear administrador</h2>
+      <p class="hint">Solo puede existir un administrador. Quien cree esta contraseña será el único que pueda editar el cuadro, cargar resultados y gestionar usuarios.</p>
+      <div class="field-group" style="margin-bottom:8px"><span>Nueva contraseña</span><input id="adminPass1" type="password" ${inp()}></div>
+      <div class="field-group" style="margin-bottom:12px"><span>Repetir contraseña</span><input id="adminPass2" type="password" ${inp()}></div>
+      <button class="btn" onclick="adminSetup()">Crear y entrar como administrador</button>
+    </div>`;
+    return `<div class="card auth-card">
+      <h2>Acceso de administrador</h2>
+      <p class="hint">Ingresá la contraseña de administrador para editar el cuadro, cargar resultados y restablecer contraseñas de participantes.</p>
+      <div class="field-group" style="margin-bottom:12px"><span>Contraseña</span><input id="adminPassInput" type="password" ${inp()}></div>
+      <button class="btn" onclick="adminLogin()">Entrar</button>
+    </div>`;
+  }
+  const tournamentBlock=t=>{
+    const rows=TOURNEYS[t].rounds.map(r=>{
+      const status=(STATE.phaseStatus[t]||{})[r.key]||"auto";
+      return `<div class="phase-row">
+        <div class="pname">${r.label}</div>
+        <div class="pstatus">${roundStatusLabel(t,r)}</div>
+        <div class="seg">
+          <button class="${status==="auto"?"on":""}" onclick="setPhaseStatus('${t}','${r.key}','auto')">Auto</button>
+          <button class="${status==="open"?"on":""}" onclick="setPhaseStatus('${t}','${r.key}','open')">Abrir</button>
+          <button class="${status==="closed"?"on":""}" onclick="setPhaseStatus('${t}','${r.key}','closed')">Cerrar</button>
         </div>
       </div>`;
-  }
-
-  const tournamentBlock = (t)=>{
-    const rows = TOURNEYS[t].rounds.map(r=>{
-      const status = (STATE.phaseStatus[t]||{})[r.key] || 'auto';
-      return `
-        <div class="phase-row">
-          <div class="pname">${r.label}</div>
-          <div class="pstatus">${roundStatusLabel(t,r)}</div>
-          <div class="seg">
-            <button class="${status==='auto'?'on':''}" onclick="setPhaseStatus('${t}','${r.key}','auto')">Auto</button>
-            <button class="${status==='open'?'on':''}" onclick="setPhaseStatus('${t}','${r.key}','open')">Abrir</button>
-            <button class="${status==='closed'?'on':''}" onclick="setPhaseStatus('${t}','${r.key}','closed')">Cerrar</button>
-          </div>
-        </div>`;
     }).join("");
-    return `<div class="card"><h2>${TOURNEYS[t].label}</h2><p class="hint">"Auto" cierra la fase apenas comienza su primer partido (según la fecha configurada). "Abrir" fuerza la apuesta abierta aunque ya haya empezado. "Cerrar" fuerza el cierre aunque todavía no empiece.</p>${rows}</div>`;
+    return `<div class="card"><h2>${TOURNEYS[t].label} — Estado de apuestas</h2>${rows}</div>`;
   };
-
   return `
     <div class="card">
       <h2>Sesión de administrador activa</h2>
-      <p class="hint">Puedes editar el cuadro, cargar resultados reales, restablecer contraseñas de participantes y abrir/cerrar las apuestas de cada fase.</p>
       <button class="btn ghost" onclick="adminLogout()">Cerrar sesión de administrador</button>
     </div>
     <div class="card">
       <h2>Restablecer contraseña de un participante</h2>
-      <p class="hint">Si alguien olvidó su contraseña y no tiene correo registrado (o simplemente prefiere pedírtelo a ti), puedes fijarle una nueva directamente aquí.</p>
+      <p class="hint">Usá esto cuando alguien olvidó su contraseña. Avisale la nueva contraseña por otro medio.</p>
       <div class="btn-row" style="align-items:flex-end">
-        <div class="field-group"><span>Apodo del participante</span><input id="resetNick" type="text" placeholder="Ej: Perico" style="padding:8px;border-radius:7px;background:var(--ink);border:1px solid var(--line);color:var(--chalk)"></div>
-        <div class="field-group"><span>Nueva contraseña</span><input id="resetNewPass" type="text" placeholder="Nueva contraseña" style="padding:8px;border-radius:7px;background:var(--ink);border:1px solid var(--line);color:var(--chalk)"></div>
+        <div class="field-group"><span>Nombre del participante</span><input id="resetName" type="text" placeholder="Nombre exacto" ${inp("min-width:160px")}></div>
+        <div class="field-group"><span>Nueva contraseña</span><input id="resetNewPass" type="text" placeholder="Nueva contraseña" ${inp("min-width:140px")}></div>
         <button class="btn" onclick="adminResetUserPassword()">Restablecer</button>
       </div>
     </div>
     ${tournamentBlock("CL")}
-    ${tournamentBlock("CS")}
-  `;
+    ${tournamentBlock("CS")}`;
 }
-async function setPhaseStatus(t, roundKey, status){
-  const data = STATE.phaseStatus[t] || {};
-  data[roundKey] = status;
-  await savePhaseStatus(t, data);
-  toast("Estado de la fase actualizado");
-  await renderTab();
+function setPhaseStatus(t,roundKey,status){
+  const data=STATE.phaseStatus[t]||{};
+  data[roundKey]=status;
+  savePhaseStatus(t,data); toast("Estado actualizado"); renderTab();
 }
 
-/* ======================= TAB: TABLA ======================= */
-function rankingTableHtml(rows){
-  return rows.length ? rows.map((r,i)=>`
-    <tr>
-      <td class="rank">${i+1}</td>
-      <td>${esc(r.name)}</td>
-      <td><b>${r.total.toFixed(2)}</b></td>
-      <td class="muted">${r.exact}</td>
-      <td class="muted">${r.clasOk}</td>
-      <td class="muted">${r.semiFinalPts.toFixed(2)}</td>
-      <td class="muted">${r.diffOk}</td>
-    </tr>
-  `).join("") : `<tr><td colspan="7" class="empty">Todavía no hay pronósticos cargados para este torneo.</td></tr>`;
-}
-
-async function renderTabla(){
-  // Siempre se muestran los 3 ranking: Libertadores, Sudamericana y Combinado (no depende del selector de torneo)
-  STATE.allPreds = STATE.allPreds || {};
-  STATE.allPreds.CL = await loadAllPredictions("CL");
-  STATE.allPreds.CS = await loadAllPredictions("CS");
-  const clRows = computeLeaderboard("CL");
-  const csRows = computeLeaderboard("CS");
-
-  const combinedMap = {};
-  clRows.forEach(r=>{ combinedMap[r.name.toLowerCase()] = combinedMap[r.name.toLowerCase()] || {name:r.name, total:0}; combinedMap[r.name.toLowerCase()].total += r.total; });
-  csRows.forEach(r=>{ combinedMap[r.name.toLowerCase()] = combinedMap[r.name.toLowerCase()] || {name:r.name, total:0}; combinedMap[r.name.toLowerCase()].total += r.total; });
-  const combined = Object.values(combinedMap).sort((a,b)=>b.total-a.total);
-  const combinedHtml = combined.length ? combined.map((r,i)=>`<tr><td class="rank">${i+1}</td><td>${esc(r.name)}</td><td><b>${r.total.toFixed(2)}</b></td></tr>`).join("")
-    : `<tr><td colspan="3" class="empty">Sin datos todavía.</td></tr>`;
-
-  const theadCols = `<thead><tr><th>#</th><th>Participante</th><th>Puntos</th><th>Exactos</th><th>Clasif. ok</th><th>Pts. semis+final</th><th>Diferencias ok</th></tr></thead>`;
-
+/* =====================================================================
+   TAB: TABLA
+   ===================================================================== */
+function renderTabla(){
+  STATE.allPreds=STATE.allPreds||{};
+  STATE.allPreds.CL=loadAllPredictions("CL");
+  STATE.allPreds.CS=loadAllPredictions("CS");
+  const clRows=computeLeaderboard("CL"), csRows=computeLeaderboard("CS");
+  const combinedMap={};
+  clRows.forEach(r=>{ const k=r.name.toLowerCase(); combinedMap[k]=combinedMap[k]||{name:r.name,total:0}; combinedMap[k].total+=r.total; });
+  csRows.forEach(r=>{ const k=r.name.toLowerCase(); combinedMap[k]=combinedMap[k]||{name:r.name,total:0}; combinedMap[k].total+=r.total; });
+  const combined=Object.values(combinedMap).sort((a,b)=>b.total-a.total);
+  const thead=`<thead><tr><th>#</th><th>Participante</th><th>Puntos</th><th>Exactos</th><th>Clasif.</th><th>Semis+Final</th><th>Dif. gol</th></tr></thead>`;
+  const mkRows=rows=>rows.length?rows.map((r,i)=>`<tr><td class="rank">${i+1}</td><td>${esc(r.name)}</td><td><b>${r.total.toFixed(2)}</b></td><td class="muted">${r.exact}</td><td class="muted">${r.clasOk}</td><td class="muted">${r.semiFinalPts.toFixed(2)}</td><td class="muted">${r.diffOk}</td></tr>`).join(""):`<tr><td colspan="7" class="empty">Sin datos todavía.</td></tr>`;
+  const comb3=combined.length?combined.map((r,i)=>`<tr><td class="rank">${i+1}</td><td>${esc(r.name)}</td><td><b>${r.total.toFixed(2)}</b></td></tr>`).join(""):`<tr><td colspan="3" class="empty">Sin datos todavía.</td></tr>`;
   return `
-    <div class="card">
-      <h2>1. Ranking Copa Libertadores</h2>
-      <p class="hint">Desempate en este orden: más marcadores exactos → más clasificados acertados → más puntos en semifinal+final → más diferencias de gol acertadas. Si sigue el empate, premio compartido.</p>
-      <table>${theadCols}<tbody>${rankingTableHtml(clRows)}</tbody></table>
-    </div>
-    <div class="card">
-      <h2>2. Ranking Copa Sudamericana</h2>
-      <p class="hint">Incluye la Fase Previa (Playoff de Octavos), que puntúa igual que Octavos (×1). Mismo criterio de desempate que arriba.</p>
-      <table>${theadCols}<tbody>${rankingTableHtml(csRows)}</tbody></table>
-    </div>
-    <div class="card">
-      <h2>3. Ranking combinado (Libertadores + Sudamericana)</h2>
-      <p class="hint">Suma el puntaje de ambos torneos por participante (se combinan por nombre).</p>
-      <table>
-        <thead><tr><th>#</th><th>Participante</th><th>Puntos totales</th></tr></thead>
-        <tbody>${combinedHtml}</tbody>
-      </table>
-    </div>
-  `;
+    <div class="card"><h2>1. Ranking Copa Libertadores</h2><p class="hint">Desempate: exactos → clasificados → puntos semis/final → diferencias de gol. Si sigue el empate, premio compartido.</p><table>${thead}<tbody>${mkRows(clRows)}</tbody></table></div>
+    <div class="card"><h2>2. Ranking Copa Sudamericana</h2><p class="hint">Incluye la Fase Previa (×1). Mismo criterio de desempate.</p><table>${thead}<tbody>${mkRows(csRows)}</tbody></table></div>
+    <div class="card"><h2>3. Ranking combinado</h2><p class="hint">Suma el puntaje de ambos torneos por participante.</p><table><thead><tr><th>#</th><th>Participante</th><th>Puntos totales</th></tr></thead><tbody>${comb3}</tbody></table></div>`;
 }
 
-/* ======================= TAB: REGLAS ======================= */
+/* =====================================================================
+   TAB: REGLAS
+   ===================================================================== */
 function renderReglas(){
-  return `
-    <div class="card">
-      <h2>Cómo se puntúa cada llave</h2>
-      <ul class="rules-list">
-        <li><b>Marcador de ida</b> (máx. 8 pts): exacto <code class="k">8</code>, misma diferencia de gol <code class="k">2</code>, ganador/empate correcto sin marcador ni diferencia exacta <code class="k">4</code>. Se entrega solo el puntaje más alto que aplique, revisando primero si el marcador es exacto y luego si la diferencia de gol coincide.</li>
-        <li><b>Marcador de vuelta</b>: igual que la ida, máx. 8 pts.</li>
-        <li><b>Equipo que clasifica</b>: <code class="k">10</code> pts, sin importar si fue en los 90', alargue o penales.</li>
-        <li><b>Bonus llave perfecta</b>: si acertaste marcador exacto de ida, marcador exacto de vuelta y el clasificado → <code class="k">+5</code> pts extra.</li>
-        <li><b>Puntaje máximo por llave</b>: 8 + 8 + 10 + 5 = <code class="k">31</code> pts (antes del multiplicador de fase).</li>
-        <li><b>Final</b>: al ser partido único, se evalúa igual que un solo marcador (máx. 8) + clasificado/campeón (10) + bonus si ambos son exactos (+5).</li>
-      </ul>
-      <h2 style="margin-top:16px">Multiplicador por fase</h2>
-      <ul class="rules-list">
-        <li>Fase Previa (solo Copa Sudamericana, Playoff de Octavos): <code class="k">×1</code>, misma puntuación que Octavos.</li>
-        <li>Octavos: <code class="k">×1</code></li>
-        <li>Cuartos de Final: <code class="k">×1.25</code></li>
-        <li>Semifinal: <code class="k">×1.5</code></li>
-        <li>Final: <code class="k">×2</code></li>
-      </ul>
-      <h2 style="margin-top:16px">Restricción: no se puede cambiar el pronóstico una vez iniciada la fase</h2>
-      <ul class="rules-list">
-        <li>Una vez que arranca el primer partido de una fase (por ejemplo, el primer partido de ida de Octavos), los pronósticos de <b>todas</b> las llaves de esa fase quedan bloqueados, aunque el resultado real todavía no se haya cargado.</li>
-        <li>Esa restricción se levanta recién cuando termina la última llave jugada de esa fase (con su resultado real cargado), momento en el que se habilita el pronóstico de la fase siguiente.</li>
-        <li>El administrador puede forzar la apertura o el cierre de una fase manualmente (por ejemplo, si un partido se reprograma) desde la pestaña "⚙ Admin".</li>
-        <li>Los pronósticos ya guardados no se pierden: simplemente quedan de solo lectura una vez bloqueados.</li>
-      </ul>
-      <h2 style="margin-top:16px">Cuentas y administrador</h2>
-      <ul class="rules-list">
-        <li>Cada participante se identifica con <b>nombre real</b>, <b>apodo en la apuesta</b> (el que aparece en la tabla), <b>correo electrónico</b> y una <b>contraseña</b>, para que nadie pueda cambiar sin querer el pronóstico de otro.</li>
-        <li>Un <b>administrador</b> (con una contraseña propia y compartida solo entre quien organiza, y su propio correo) es el único que puede editar el cuadro de equipos, cargar los resultados reales, abrir/cerrar las apuestas de cada fase y restablecer la contraseña de cualquier participante.</li>
-        <li><b>¿Cómo funciona "recuperar por correo"?</b> Esta app es un archivo sin servidor propio, así que no puede enviar correos automáticos por sí sola. Al tocar "¿Olvidaste tu contraseña?", se abre un borrador de e-mail (con tu programa de correo) ya redactado hacia el correo con el que te registraste, y tú mismo lo envías con un clic. Si prefieres no depender de eso, el administrador también puede restablecerte la contraseña manualmente desde la pestaña "⚙ Admin".</li>
-      </ul>
-      <h2 style="margin-top:16px">Desempates</h2>
-      <ul class="rules-list">
-        <li>1° Mayor cantidad de marcadores exactos.</li>
-        <li>2° Mayor cantidad de clasificados acertados.</li>
-        <li>3° Mayor puntaje obtenido en semifinales y final.</li>
-        <li>4° Mayor cantidad de diferencias de gol acertadas.</li>
-        <li>Si sigue el empate: premio compartido.</li>
-      </ul>
-      <h2 style="margin-top:16px">Fechas oficiales 2026 (CONMEBOL)</h2>
-      <ul class="rules-list">
-        <li><b>Libertadores:</b> Octavos 11–20 ago · Cuartos 8–17 sep · Semifinal 14–22 oct · Final única 28 nov en el Estadio Centenario, Montevideo.</li>
-        <li><b>Sudamericana:</b> Fase Previa (Playoff de Octavos) 21–30 jul · Octavos 11–20 ago · Cuartos 8–17 sep · Semifinal 13–21 oct · Final única 21 nov en el Estadio Metropolitano, Barranquilla.</li>
-        <li>Las fechas exactas por llave pueden variar según lo publique la CONMEBOL; edítalas en el organizador si es necesario.</li>
-      </ul>
-      <h2 style="margin-top:16px">Localía por número de seed</h2>
-      <ul class="rules-list">
-        <li>En cada llave, el equipo con el número de seed más alto juega de local en la ida; el de número más bajo juega de local en la vuelta. Esta regla se aplica también en Cuartos, Semifinal y Final, comparando los seeds de los clasificados que llegan a cada instancia.</li>
-        <li>Llaves de Octavos de Libertadores: 4 vs 14 · 7 vs 9 · 1 vs 12 · 3 vs 15 · 6 vs 10 · 5 vs 11 · 8 vs 13 · 2 vs 16.</li>
-        <li>Llaves de la Fase Previa de Sudamericana: 12 vs 21 · 9 vs 24 · 14 vs 19 · 11 vs 22 · 10 vs 23 · 16 vs 17 · 13 vs 20 · 15 vs 18.</li>
-      </ul>
-    </div>
-  `;
+  return `<div class="card">
+    <h2>Sistema de puntuación</h2>
+    <ul class="rules-list">
+      <li><b>Marcador de ida</b> (máx. 8 pts): marcador exacto <code class="k">8</code> · misma diferencia de goles <code class="k">2</code> · ganador/empate correcto <code class="k">4</code>. Solo se entrega el mayor puntaje que aplique.</li>
+      <li><b>Marcador de vuelta</b>: igual que la ida, máx. 8 pts.</li>
+      <li><b>Equipo que clasifica</b>: <code class="k">10</code> pts (vale por 90', alargue o penales).</li>
+      <li><b>Bonus llave perfecta</b>: ida exacta + vuelta exacta + clasificado correcto → <code class="k">+5</code> pts extra.</li>
+      <li><b>Final (partido único)</b>: marcador único (máx. 8) + campeón (10) + bonus si ambos exactos (+5).</li>
+      <li><b>Puntaje máximo por llave</b>: 8 + 8 + 10 + 5 = <code class="k">31 pts</code> (antes del multiplicador).</li>
+    </ul>
+    <h2 style="margin-top:16px">Multiplicador por fase</h2>
+    <ul class="rules-list">
+      <li>Fase Previa (solo Sudamericana): <code class="k">×1</code></li>
+      <li>Octavos: <code class="k">×1</code></li>
+      <li>Cuartos: <code class="k">×1.25</code></li>
+      <li>Semifinal: <code class="k">×1.5</code></li>
+      <li>Final: <code class="k">×2</code></li>
+    </ul>
+    <h2 style="margin-top:16px">Localía por seed</h2>
+    <ul class="rules-list">
+      <li>En cada llave, el equipo con el <b>seed más alto</b> (número mayor) juega de local en la <b>ida</b> y de visitante en la <b>vuelta</b>. Ej: Boca Juniors (#21) vs O'Higgins (#12) → Ida: Boca vs O'Higgins · Vuelta: O'Higgins vs Boca.</li>
+    </ul>
+    <h2 style="margin-top:16px">Desempates</h2>
+    <ul class="rules-list">
+      <li>1° Más marcadores exactos · 2° Más clasificados acertados · 3° Más puntos en semis+final · 4° Más diferencias de gol acertadas · Si sigue el empate: premio compartido.</li>
+    </ul>
+    <h2 style="margin-top:16px">Restricción de fechas</h2>
+    <ul class="rules-list">
+      <li>Una vez que arranca el primer partido de una fase, los pronósticos quedan bloqueados. Se desbloquea la siguiente fase cuando el admin carga el último resultado de la fase actual.</li>
+      <li>El admin puede forzar apertura/cierre manual de cualquier fase desde ⚙ Admin.</li>
+    </ul>
+    <h2 style="margin-top:16px">Cuentas</h2>
+    <ul class="rules-list">
+      <li>Cada participante se registra con <b>nombre y contraseña</b>. Si olvidás la contraseña, pedíle al administrador que te la restablezca desde ⚙ Admin.</li>
+      <li>Solo puede existir <b>1 administrador</b> por instalación. Los datos se guardan en el navegador (localStorage) y persisten entre sesiones en el mismo dispositivo.</li>
+    </ul>
+    <h2 style="margin-top:16px">Fechas oficiales 2026</h2>
+    <ul class="rules-list">
+      <li><b>Libertadores:</b> Octavos 11–20 ago · Cuartos 8–17 sep · Semifinal 14–22 oct · Final 28 nov — Centenario, Montevideo.</li>
+      <li><b>Sudamericana:</b> Fase Previa 21–30 jul · Octavos 11–20 ago · Cuartos 8–17 sep · Semifinal 13–21 oct · Final 21 nov — Metropolitano, Barranquilla.</li>
+    </ul>
+  </div>`;
 }
 
-/* ======================= INIT ======================= */
-async function init(){
-  const sessionRaw = await sGet("session", false);
-  if(sessionRaw){
-    try{
-      const s = JSON.parse(sessionRaw);
-      if(s && s.nick){ STATE.me = s.nick; STATE.realName = s.realName || ""; STATE.loggedIn = true; }
-    }catch(e){}
-  }
-  STATE.isAdmin = (await sGet("adminUnlocked", false)) === "1";
-
-  STATE.brackets.CL = await ensureBracket("CL");
-  STATE.brackets.CS = await ensureBracket("CS");
-  STATE.results.CL = await ensureResults("CL");
-  STATE.results.CS = await ensureResults("CS");
-  STATE.phaseStatus.CL = await ensurePhaseStatus("CL");
-  STATE.phaseStatus.CS = await ensurePhaseStatus("CS");
-  STATE.allPreds = {};
-  await render();
+/* =====================================================================
+   INIT
+   ===================================================================== */
+function init(){
+  const sess=lsGet("session");
+  if(sess){ try{ const s=JSON.parse(sess); if(s&&s.name){ STATE.me=s.name; STATE.loggedIn=true; } }catch(e){} }
+  STATE.isAdmin=lsGet("adminSession")==="1";
+  STATE.brackets.CL=loadBracket("CL");
+  STATE.brackets.CS=loadBracket("CS");
+  STATE.results.CL=loadResults("CL");
+  STATE.results.CS=loadResults("CS");
+  STATE.phaseStatus.CL=loadPhaseStatus("CL");
+  STATE.phaseStatus.CS=loadPhaseStatus("CS");
+  STATE.allPreds={};
+  render();
 }
 init();
 </script>
