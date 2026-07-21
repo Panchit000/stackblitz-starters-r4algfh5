@@ -113,16 +113,57 @@
 <body>
 <div class="shell" id="app">Cargando…</div>
 <div class="toast" id="toast"></div>
+
+<!-- Firebase (para sincronizar datos entre todos los dispositivos). Si no está configurado, la app sigue funcionando en modo "solo este dispositivo". -->
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-database-compat.js"></script>
+
 <script>
 /* =====================================================================
-   STORAGE — usa localStorage para persistencia real en Vercel.
-   Fallback a memoria si localStorage no está disponible.
+   ☁️ CONFIGURACIÓN DE FIREBASE — PEGÁ ACÁ TUS DATOS
+   ¿Cómo obtenerlos? Seguí la guía "guia-firebase-sincronizacion.md" que
+   te entregué junto con este archivo. Resumen:
+     1. https://console.firebase.google.com → Crear proyecto (gratis)
+     2. Build → Realtime Database → Crear base de datos → modo de prueba
+     3. Ir a ⚙ Configuración del proyecto → tus apps → Web (</>) → Registrar app
+     4. Copiar el objeto "firebaseConfig" que te muestra y pegarlo abajo,
+        reemplazando TODO este objeto de ejemplo.
+   Mientras esto diga "TU_API_KEY", la app funciona SOLO en este dispositivo
+   (localStorage) y por eso cada persona ve datos distintos.
+   ===================================================================== */
+const firebaseConfig = {
+  apiKey: "AIzaSyDastlipY1295CdH7XjE_Z8l_uHj8SysWU",
+  authDomain: "conmebol-2026.firebaseapp.com",
+  databaseURL: "https://conmebol-2026-default-rtdb.firebaseio.com",
+  projectId: "conmebol-2026",
+  storageBucket: "conmebol-2026.firebasestorage.app",
+  messagingSenderId: "289223254005",
+  appId: "1:289223254005:web:07f1e902452ee9175d0abc"
+};
+
+/* =====================================================================
+   STORAGE — capa unificada:
+   - CACHE: copia en memoria de TODOS los datos (clave -> valor string)
+   - Si Firebase está configurado: CACHE se sincroniza en vivo con la nube,
+     así que un cambio de cualquier persona se ve reflejado en todos los
+     dispositivos conectados, casi en tiempo real.
+   - Si Firebase NO está configurado: se usa localStorage como respaldo
+     (comportamiento "solo este dispositivo", el mismo de antes).
    ===================================================================== */
 const MEM = {};
-function lsGet(key){ try{ return localStorage.getItem(key); }catch(e){ return MEM[key]||null; } }
-function lsSet(key,val){ try{ localStorage.setItem(key,val); }catch(e){ MEM[key]=val; } }
-function lsDel(key){ try{ localStorage.removeItem(key); }catch(e){ delete MEM[key]; } }
-function lsKeys(prefix){
+let CACHE = {};
+let fbEnabled = false;
+let fbRootRef = null;
+let appBooted = false;
+
+function isFirebaseConfigured(){
+  return firebaseConfig.apiKey && firebaseConfig.apiKey.indexOf("TU_API_KEY")===-1 && firebaseConfig.apiKey.length>10;
+}
+
+function rawLsGet(key){ try{ return localStorage.getItem(key); }catch(e){ return MEM[key]||null; } }
+function rawLsSet(key,val){ try{ localStorage.setItem(key,val); }catch(e){ MEM[key]=val; } }
+function rawLsDel(key){ try{ localStorage.removeItem(key); }catch(e){ delete MEM[key]; } }
+function rawLsKeys(prefix){
   const out=[];
   try{
     for(let i=0;i<localStorage.length;i++){
@@ -133,6 +174,95 @@ function lsKeys(prefix){
     Object.keys(MEM).forEach(k=>{ if(k.startsWith(prefix)) out.push(k); });
   }
   return out;
+}
+
+// Estas 4 funciones son las que usa el resto de la app (misma firma de siempre).
+function lsGet(key){
+  if(Object.prototype.hasOwnProperty.call(CACHE,key)) return CACHE[key];
+  return rawLsGet(key);
+}
+function lsSet(key,val){
+  CACHE[key]=val;
+  rawLsSet(key,val); // respaldo local siempre, aunque haya Firebase
+  if(fbEnabled && fbRootRef){ fbRootRef.child(key).set(val).catch(e=>console.error("Firebase set error",key,e)); }
+}
+function lsDel(key){
+  delete CACHE[key];
+  rawLsDel(key);
+  if(fbEnabled && fbRootRef){ fbRootRef.child(key).remove().catch(e=>console.error("Firebase remove error",key,e)); }
+}
+function lsKeys(prefix){
+  const set=new Set();
+  Object.keys(CACHE).forEach(k=>{ if(k.startsWith(prefix)) set.add(k); });
+  rawLsKeys(prefix).forEach(k=>set.add(k));
+  return Array.from(set);
+}
+
+/* ¿El usuario está en medio de escribir algo (un input/select con foco dentro
+   del contenido de la pestaña)? Si es así, no lo interrumpimos con un re-render
+   automático cuando llega un cambio remoto de otra persona. */
+function isUserEditing(){
+  const el=document.activeElement;
+  const tabContent=document.getElementById("tabContent");
+  return !!(el && tabContent && tabContent.contains(el) && (el.tagName==="INPUT"||el.tagName==="SELECT"));
+}
+
+/* Vuelve a poblar el STATE (brackets, resultados, estado de fases) desde
+   la CACHE actual — se usa al iniciar y cada vez que llega un cambio remoto. */
+function refreshStateFromStorage(){
+  STATE.brackets.CL=loadBracket("CL");
+  STATE.brackets.CS=loadBracket("CS");
+  STATE.results.CL=loadResults("CL");
+  STATE.results.CS=loadResults("CS");
+  STATE.phaseStatus.CL=loadPhaseStatus("CL");
+  STATE.phaseStatus.CS=loadPhaseStatus("CS");
+}
+
+function bootApp(){
+  if(appBooted) return;
+  appBooted=true;
+  const sess=lsGet("session");
+  if(sess){ try{ const s=JSON.parse(sess); if(s&&s.name){ STATE.me=s.name; STATE.loggedIn=true; } }catch(e){} }
+  STATE.isAdmin=lsGet("adminSession")==="1";
+  refreshStateFromStorage();
+  STATE.allPreds={};
+  render();
+}
+
+function initFirebase(){
+  if(!isFirebaseConfigured()){
+    fbEnabled=false;
+    bootApp();
+    return;
+  }
+  try{
+    firebase.initializeApp(firebaseConfig);
+    const db=firebase.database();
+    fbRootRef=db.ref("polla2026");
+    fbRootRef.once("value").then(snap=>{
+      const remote=snap.val()||{};
+      // La nube manda: lo que ya exista ahí pisa lo que hubiera solo local.
+      CACHE=Object.assign({}, CACHE, remote);
+      fbEnabled=true;
+      bootApp();
+      // A partir de acá, cualquier cambio (propio o de otra persona) llega en vivo.
+      fbRootRef.on("value", snap2=>{
+        CACHE=snap2.val()||{};
+        if(!appBooted) return;
+        if(isUserEditing()) return; // no interrumpir a alguien que está tipeando
+        refreshStateFromStorage();
+        render();
+      });
+    }).catch(e=>{
+      console.error("No se pudo conectar a Firebase, usando modo local:",e);
+      fbEnabled=false;
+      bootApp();
+    });
+  }catch(e){
+    console.error("Error inicializando Firebase, usando modo local:",e);
+    fbEnabled=false;
+    bootApp();
+  }
 }
 
 /* =====================================================================
@@ -459,6 +589,10 @@ function inp(style=""){ return `style="width:100%;padding:8px 10px;border-radius
 function render(){
   const app=document.getElementById("app");
   const t=STATE.tournament;
+  const fbBanner=(!fbEnabled)?`
+    <div class="readonly-note" style="margin-bottom:14px;">
+      ⚠️ <b>Sincronización en la nube no configurada.</b> Ahora mismo, cada dispositivo/navegador guarda sus propios datos por separado (por eso los cambios de uno no los ve el otro). Para que todos compartan el mismo cuadro, pronósticos y tabla, el administrador debe completar la configuración de Firebase (gratis, 10 minutos) — ver "guia-firebase-sincronizacion.md".
+    </div>` : "";
   const identityHtml=STATE.loggedIn?`
     <div class="me-bar">
       <div class="whoami">🔑 Jugando como <b>${esc(STATE.me)}</b></div>
@@ -485,6 +619,7 @@ function render(){
       <div class="rung"><span class="name">Final</span><span class="mult">×2</span></div>
     </div>
     ${identityHtml}
+    ${fbBanner}
     <div class="tsel">
       <button class="${t==="CL"?"on":""}" onclick="switchTourney('CL')">🏆 Libertadores<small>Final 28 nov · Montevideo</small></button>
       <button class="${t==="CS"?"on":""}" onclick="switchTourney('CS')">🥈 Sudamericana<small>Final 21 nov · Barranquilla</small></button>
@@ -493,7 +628,7 @@ function render(){
       ${TAB_KEYS.map(k=>tabBtn(k,k==="admin"?(STATE.isAdmin?"⚙ Admin ●":"⚙ Admin"):k.charAt(0).toUpperCase()+k.slice(1))).join("")}
     </div>
     <div id="tabContent">Cargando…</div>
-    <footer>Todos los datos se guardan en tu navegador (localStorage) y son compartidos en el mismo dispositivo. Para compartir con amigos, publícala en Vercel — cada uno accede desde su dispositivo y sus datos quedan guardados ahí. · Hecho para apostar entre amigos 🏆</footer>
+    <footer>${fbEnabled ? "☁️ Sincronizado en la nube: todos los participantes ven el mismo cuadro, pronósticos y tabla en tiempo real." : "⚠️ Modo local: cada dispositivo guarda sus propios datos hasta que se configure Firebase."} · Hecho para apostar entre amigos 🏆</footer>
   `;
   renderTab();
 }
@@ -926,17 +1061,7 @@ function renderReglas(){
    INIT
    ===================================================================== */
 function init(){
-  const sess=lsGet("session");
-  if(sess){ try{ const s=JSON.parse(sess); if(s&&s.name){ STATE.me=s.name; STATE.loggedIn=true; } }catch(e){} }
-  STATE.isAdmin=lsGet("adminSession")==="1";
-  STATE.brackets.CL=loadBracket("CL");
-  STATE.brackets.CS=loadBracket("CS");
-  STATE.results.CL=loadResults("CL");
-  STATE.results.CS=loadResults("CS");
-  STATE.phaseStatus.CL=loadPhaseStatus("CL");
-  STATE.phaseStatus.CS=loadPhaseStatus("CS");
-  STATE.allPreds={};
-  render();
+  initFirebase();
 }
 init();
 </script>
