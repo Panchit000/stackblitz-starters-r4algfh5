@@ -658,8 +658,9 @@ function matchPoints(ph,pa,ah,aa){
   if(ph==null||pa==null||ah==null||aa==null) return 0;
   if(ph===ah&&pa===aa) return 8; // marcador exacto
   const sgn=x=>x>0?1:(x<0?-1:0);
-  if(sgn(ph-pa)===sgn(ah-aa)) return 4; // ganador/empate correcto
-  if((ph-pa)===(ah-aa)) return 2; // misma diferencia de goles (sin ganador correcto)
+  const pd=ph-pa, ad=ah-aa;
+  if(sgn(pd)===sgn(ad)) return 4; // ganador/empate correcto
+  if(Math.abs(pd)===Math.abs(ad)) return 2; // misma diferencia de gol (en valor absoluto, aunque el ganador sea el equivocado)
   return 0;
 }
 /* Entrega el puntaje de lo que YA esté cargado, sin esperar a que la llave esté
@@ -1299,8 +1300,9 @@ function renderReglas(){
   return `<div class="card">
     <h2>Sistema de puntuación</h2>
     <ul class="rules-list">
-      <li><b>Marcador de ida</b> (máx. 8 pts): marcador exacto <code class="k">8</code> · ganador/empate correcto <code class="k">4</code> · misma diferencia de goles (sin ganador correcto) <code class="k">2</code>. Se evalúa en ese orden y se entrega el mayor puntaje que aplique.</li>
-      <li>Ejemplo: pronóstico 2-0, resultado 3-1 → ambos son triunfo del local, así que se cuenta como <b>ganador correcto</b> (4 pts), no como diferencia de gol.</li>
+      <li><b>Marcador de ida</b> (máx. 8 pts): marcador exacto <code class="k">8</code> · ganador/empate correcto <code class="k">4</code> · misma diferencia de goles en valor absoluto <code class="k">2</code>. Se evalúa en ese orden y se entrega el mayor puntaje que aplique.</li>
+      <li>Ejemplo (ganador correcto): pronóstico 2-0, resultado 3-1 → ambos son triunfo del local → <b>4 pts</b>.</li>
+      <li>Ejemplo (diferencia de gol en valor absoluto): pronóstico 0-1 (pierde por 1), resultado 2-1 (gana por 1) → la diferencia de gol es la misma (1) aunque el ganador no coincida → <b>2 pts</b>.</li>
       <li><b>Marcador de vuelta</b>: igual que la ida, máx. 8 pts.</li>
       <li><b>Equipo que clasifica</b>: <code class="k">10</code> pts (vale por 90', alargue o penales).</li>
       <li><b>Bonus llave perfecta</b>: ida exacta + vuelta exacta + clasificado correcto → <code class="k">+5</code> pts extra.</li>
