@@ -512,9 +512,136 @@ function adminResetUserPassword(){
   document.getElementById("resetNewPass").value="";
 }
 
-/* =====================================================================
-   GANADOR DE UNA LLAVE
-   ===================================================================== */
+/* ======================= GESTIÓN DE PARTICIPANTES (ADMIN) ======================= */
+function allUsersList(){
+  return lsKeys("user:").map(k=>{
+    try{ return JSON.parse(lsGet(k)); }catch(e){ return null; }
+  }).filter(Boolean).sort((a,b)=>a.name.localeCompare(b.name));
+}
+function adminDeleteUser(name){
+  if(!STATE.isAdmin){ toast("Solo el administrador puede hacer esto"); return; }
+  if(!confirm(`¿Eliminar a "${name}" y todos sus pronósticos (Libertadores y Sudamericana)? Esta acción no se puede deshacer.`)) return;
+  const s=slug(name);
+  lsDel("user:"+s);
+  lsDel("pred:CL:"+s);
+  lsDel("pred:CS:"+s);
+  if(STATE.me===name){ STATE.me=""; STATE.loggedIn=false; lsDel("session"); }
+  toast(`"${name}" eliminado`);
+  render();
+}
+/* El admin edita/corrige los pronósticos de cualquier jugador, sin restricciones de fecha ni de resultados. */
+function saveUserPredsAsAdmin(name){
+  if(!STATE.isAdmin){ toast("Solo el administrador puede hacer esto"); return; }
+  if(!name){ toast("Elegí un jugador"); return; }
+  const t=STATE.tournament;
+  const pred=loadMyPrediction(t,name);
+  pred.displayName=name;
+  document.querySelectorAll("#tabContent .ainp").forEach(inp=>{
+    const id=inp.dataset.id, field=inp.dataset.field;
+    if(!pred.entries[id]) pred.entries[id]={};
+    if(inp.tagName==="SELECT") pred.entries[id][field]=inp.value||null;
+    else pred.entries[id][field]=inp.value===""?null:parseInt(inp.value,10);
+  });
+  saveMyPrediction(t,name,pred);
+  toast(`Pronósticos de "${name}" actualizados`);
+  renderTab();
+}
+function adminPickEditUser(name){
+  STATE._adminEditUser=name;
+  renderTab();
+}
+
+/* ======================= PRECARGA DE JUGADORES Y APUESTAS (FASE PREVIA — SUDAMERICANA) ======================= */
+/* Orden de llaves (mismo orden que CS_PREVIA_PAIRS / previa-0 .. previa-7):
+   0 Boca Juniors vs O'Higgins · 1 Bolívar vs Grêmio · 2 Santa Fe vs Caracas ·
+   3 Independiente Medellín vs Vasco da Gama · 4 Sporting Cristal vs Bragantino ·
+   5 Universidad Central vs Santos · 6 Nacional vs Tigre · 7 Lanús vs Cienciano
+   Cada línea de "llaves": [idaLocalGol, idaVisitaGol, vueltaLocalGol, vueltaVisitaGol, clasificado] */
+const PRELOAD_PLAYERS=[
+  {name:"Factor sorpresa", llaves:[
+    [1,0,2,0,"O'Higgins"],[3,0,3,1,"Bolívar"],[2,0,1,1,"Santa Fe"],[1,1,1,0,"Vasco da Gama"],
+    [0,2,1,0,"Bragantino"],[1,2,1,0,"Santos"],[2,0,1,1,"Nacional"],[1,1,2,0,"Cienciano"]
+  ]},
+  {name:"Vidente", llaves:[
+    [1,1,1,1,"Boca Juniors"],[2,1,3,0,"Grêmio"],[3,0,1,1,"Santa Fe"],[1,1,1,1,"Vasco da Gama"],
+    [0,2,2,0,"Bragantino"],[0,2,4,0,"Santos"],[1,1,0,0,"Tigre"],[2,0,1,1,"Lanús"]
+  ]},
+  {name:"Toro de la fortuna", llaves:[
+    [2,0,1,2,"Boca Juniors"],[1,1,2,1,"Grêmio"],[2,0,1,1,"Santa Fe"],[1,1,2,1,"Vasco da Gama"],
+    [1,2,2,0,"Bragantino"],[0,2,2,0,"Santos"],[2,1,1,1,"Nacional"],[2,0,1,1,"Lanús"]
+  ]},
+  {name:"All in", llaves:[
+    [2,0,1,2,"Boca Juniors"],[2,1,3,0,"Grêmio"],[2,0,1,2,"Santa Fe"],[1,1,2,0,"Vasco da Gama"],
+    [2,2,2,0,"Bragantino"],[0,1,3,1,"Santos"],[1,0,0,0,"Nacional"],[2,1,1,1,"Lanús"]
+  ]},
+  {name:"Portugues", llaves:[
+    [3,0,0,0,"Boca Juniors"],[0,2,1,0,"Grêmio"],[1,0,0,0,"Santa Fe"],[0,2,1,0,"Vasco da Gama"],
+    [2,1,0,0,"Sporting Cristal"],[0,1,2,0,"Santos"],[0,1,2,0,"Tigre"],[1,0,0,0,"Lanús"]
+  ]},
+  {name:"MC del gol", llaves:[
+    [2,0,1,1,"Boca Juniors"],[2,0,2,1,"Bolívar"],[2,0,1,1,"Santa Fe"],[1,1,2,1,"Vasco da Gama"],
+    [1,1,2,1,"Bragantino"],[0,2,3,0,"Santos"],[1,0,1,1,"Nacional"],[2,0,1,1,"Lanús"]
+  ]},
+  {name:"Desidente", llaves:[
+    [1,0,2,1,"O'Higgins"],[2,1,3,0,"Grêmio"],[3,0,1,1,"Santa Fe"],[1,1,2,0,"Vasco da Gama"],
+    [1,2,3,0,"Bragantino"],[0,2,4,0,"Santos"],[1,1,2,1,"Tigre"],[2,0,1,0,"Lanús"]
+  ]},
+  {name:"Chilote del acierto", llaves:[
+    [2,1,1,1,"Boca Juniors"],[1,0,3,0,"Grêmio"],[2,0,0,1,"Santa Fe"],[1,1,2,1,"Vasco da Gama"],
+    [0,1,2,0,"Bragantino"],[1,1,4,0,"Santos"],[2,1,1,1,"Nacional"],[1,0,0,1,"Lanús"]
+  ]},
+  {name:"Tipster", llaves:[
+    [2,1,2,0,"O'Higgins"],[2,0,3,1,"Grêmio"],[1,0,2,0,"Caracas"],[1,2,2,0,"Vasco da Gama"],
+    [2,0,3,0,"Bragantino"],[0,1,3,0,"Santos"],[3,0,1,1,"Nacional"],[2,0,1,2,"Lanús"]
+  ]},
+  {name:"Tactico", llaves:[
+    [2,1,1,1,"Boca Juniors"],[2,1,2,0,"Grêmio"],[2,0,1,0,"Santa Fe"],[1,0,2,0,"Vasco da Gama"],
+    [1,1,2,1,"Bragantino"],[1,1,3,1,"Santos"],[2,1,1,1,"Nacional"],[2,0,1,0,"Lanús"]
+  ]},
+  {name:"Escribano", llaves:[
+    [1,1,2,1,"O'Higgins"],[1,0,2,0,"Grêmio"],[2,0,1,1,"Santa Fe"],[1,1,2,1,"Vasco da Gama"],
+    [1,1,2,1,"Bragantino"],[0,2,2,0,"Santos"],[1,1,1,0,"Tigre"],[2,0,1,1,"Lanús"]
+  ]}
+];
+function randomPassword(){
+  const chars="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  let out="";
+  for(let i=0;i<6;i++) out+=chars[Math.floor(Math.random()*chars.length)];
+  return out;
+}
+function seedPreviaPredictions(){
+  if(!STATE.isAdmin){ toast("Solo el administrador puede hacer esto"); return; }
+  if(!confirm("Esto crea (o actualiza los pronósticos de) 11 jugadores predefinidos con sus apuestas de la Fase Previa de Sudamericana. Si un jugador ya existe, se mantiene su contraseña actual. ¿Continuar?")) return;
+  const results=[];
+  PRELOAD_PLAYERS.forEach(pl=>{
+    const key="user:"+slug(pl.name);
+    let existing=null;
+    const raw=lsGet(key);
+    if(raw){ try{ existing=JSON.parse(raw); }catch(e){} }
+    let password;
+    if(existing){
+      password=existing.password;
+    }else{
+      password=randomPassword();
+      lsSet(key,JSON.stringify({name:pl.name,password}));
+    }
+    results.push({name:pl.name,password,isNew:!existing});
+    const predKey="pred:CS:"+slug(pl.name);
+    let pred={displayName:pl.name,entries:{}};
+    const rawPred=lsGet(predKey);
+    if(rawPred){ try{ const p=JSON.parse(rawPred); if(p&&p.entries) pred=p; }catch(e){} }
+    pl.llaves.forEach((l,i)=>{
+      pred.entries["previa-"+i]={idaH:l[0],idaA:l[1],vueltaH:l[2],vueltaA:l[3],clasificado:l[4]};
+    });
+    pred.displayName=pl.name;
+    lsSet(predKey,JSON.stringify(pred));
+  });
+  STATE._seedResult=results;
+  toast("Jugadores y apuestas precargados");
+  renderTab();
+}
+
+/* ======================= GANADOR DE UNA LLAVE ======================= */
 function winnerOf(t,roundKey,seriesId){
   const s=(STATE.brackets[t][roundKey]||[]).find(x=>x.id===seriesId);
   const act=(STATE.results[t]||{})[roundKey+"-"+seriesId];
@@ -535,27 +662,45 @@ function matchPoints(ph,pa,ah,aa){
   if(sgn(ph-pa)===sgn(ah-aa)) return 4;
   return 0;
 }
+/* Entrega el puntaje de lo que YA esté cargado, sin esperar a que la llave esté
+   completa: si solo está la ida, da los puntos de la ida; si después carga la
+   vuelta, suma esos también; el bonus de llave perfecta solo se agrega cuando
+   los tres datos (ida, vuelta y clasificado) están completos y son correctos. */
 function scoreSeries(round,pred,act){
   if(!pred||!act) return null;
-  const out={ida:0,vuelta:0,clas:0,perfect:0,exactCount:0,diffCount:0};
+  const out={ida:0,vuelta:0,clas:0,perfect:0,exactCount:0,diffCount:0,idaDone:false,vueltaDone:false,clasDone:false};
   if(round.vuelta){
-    if(act.idaH==null||act.idaA==null||act.vueltaH==null||act.vueltaA==null||!act.clasificado) return null;
-    out.ida=matchPoints(pred.idaH,pred.idaA,act.idaH,act.idaA);
-    out.vuelta=matchPoints(pred.vueltaH,pred.vueltaA,act.vueltaH,act.vueltaA);
-    if(out.ida===8) out.exactCount++;
-    if(out.vuelta===8) out.exactCount++;
-    if(out.ida===2) out.diffCount++;
-    if(out.vuelta===2) out.diffCount++;
-    out.clas=(pred.clasificado&&act.clasificado&&pred.clasificado.trim().toLowerCase()===act.clasificado.trim().toLowerCase())?10:0;
-    out.perfect=(out.ida===8&&out.vuelta===8&&out.clas===10)?5:0;
+    if(act.idaH!=null&&act.idaA!=null){
+      out.ida=matchPoints(pred.idaH,pred.idaA,act.idaH,act.idaA);
+      out.idaDone=true;
+      if(out.ida===8) out.exactCount++;
+      if(out.ida===2) out.diffCount++;
+    }
+    if(act.vueltaH!=null&&act.vueltaA!=null){
+      out.vuelta=matchPoints(pred.vueltaH,pred.vueltaA,act.vueltaH,act.vueltaA);
+      out.vueltaDone=true;
+      if(out.vuelta===8) out.exactCount++;
+      if(out.vuelta===2) out.diffCount++;
+    }
+    if(act.clasificado){
+      out.clas=(pred.clasificado&&pred.clasificado.trim().toLowerCase()===act.clasificado.trim().toLowerCase())?10:0;
+      out.clasDone=true;
+    }
+    out.perfect=(out.idaDone&&out.vueltaDone&&out.clasDone&&out.ida===8&&out.vuelta===8&&out.clas===10)?5:0;
   }else{
-    if(act.unicoH==null||act.unicoA==null||!act.clasificado) return null;
-    out.ida=matchPoints(pred.unicoH,pred.unicoA,act.unicoH,act.unicoA);
-    if(out.ida===8) out.exactCount++;
-    if(out.ida===2) out.diffCount++;
-    out.clas=(pred.clasificado&&act.clasificado&&pred.clasificado.trim().toLowerCase()===act.clasificado.trim().toLowerCase())?10:0;
-    out.perfect=(out.ida===8&&out.clas===10)?5:0;
+    if(act.unicoH!=null&&act.unicoA!=null){
+      out.ida=matchPoints(pred.unicoH,pred.unicoA,act.unicoH,act.unicoA);
+      out.idaDone=true;
+      if(out.ida===8) out.exactCount++;
+      if(out.ida===2) out.diffCount++;
+    }
+    if(act.clasificado){
+      out.clas=(pred.clasificado&&pred.clasificado.trim().toLowerCase()===act.clasificado.trim().toLowerCase())?10:0;
+      out.clasDone=true;
+    }
+    out.perfect=(out.idaDone&&out.clasDone&&out.ida===8&&out.clas===10)?5:0;
   }
+  if(!out.idaDone&&!out.vueltaDone&&!out.clasDone) return null; // nada cargado todavía
   const base=out.ida+out.vuelta+out.clas+out.perfect;
   out.total=base*round.mult;
   out.clasOk=out.clas>0?1:0;
@@ -763,65 +908,71 @@ function renderPronosticar(){
   const myPred=loadMyPrediction(t,STATE.me);
   STATE._myPred=myPred;
   let anySeries=false;
-  let html=`<div class="card"><h2>Tus pronósticos — ${TOURNEYS[t].label}</h2><p class="hint">El equipo con seed más alto juega de local en la ida y de visitante en la vuelta. Una vez que arranca la fase, tu pronóstico queda bloqueado.</p></div>`;
+  let html=`<div class="card"><h2>Tus pronósticos — ${TOURNEYS[t].label}</h2><p class="hint">El equipo con seed más alto juega de local en la ida y de visitante en la vuelta. Apenas se carga el resultado real de un partido, ese partido queda bloqueado y te suma los puntos — no hace falta esperar a que termine toda la llave.</p></div>`;
   TOURNEYS[t].rounds.forEach(r=>{
     const seriesList=bracket[r.key].filter(s=>s.home&&s.away);
     if(!seriesList.length) return;
     anySeries=true;
     const cards=seriesList.map(s=>{
-      const id=r.key+"-"+s.id, act=results[id], pred=myPred.entries[id]||{};
-      const resultDone=!!(act&&((r.vuelta&&act.idaH!=null&&act.vueltaH!=null&&act.clasificado)||(!r.vuelta&&act.unicoH!=null&&act.clasificado)));
-      const dateLocked=isRoundLocked(t,r)&&!resultDone;
-      const locked=resultDone||dateLocked;
+      const id=r.key+"-"+s.id, act=results[id]||{}, pred=myPred.entries[id]||{};
+      const phaseLockedNow=isRoundLocked(t,r);
+      const idaLocked=phaseLockedNow||act.idaH!=null||act.unicoH!=null;
+      const vueltaLocked=phaseLockedNow||act.vueltaH!=null;
+      const clasLocked=phaseLockedNow||!!act.clasificado;
+      const allLocked=r.vuelta?(idaLocked&&vueltaLocked&&clasLocked):(idaLocked&&clasLocked);
       const opts=`<option value="">— elegir —</option><option value="${esc(s.home)}" ${pred.clasificado===s.home?"selected":""}>${esc(s.home)}</option><option value="${esc(s.away)}" ${pred.clasificado===s.away?"selected":""}>${esc(s.away)}</option>`;
+
+      const sc=scoreSeries(r,pred,act);
 
       // Ida: home (seed alto) es local; Vuelta: away (seed bajo) es local → se invierten los roles
       let legsHtml="";
       if(r.vuelta){
         legsHtml=`
           <div class="leg">
-            <span class="leg-label">🏠 IDA — Local: ${esc(s.home)}</span>
+            <span class="leg-label">🏠 IDA — Local: ${esc(s.home)}${sc&&sc.idaDone?` <span style="color:var(--gold-bright)">· ${sc.ida} pts</span>`:""}</span>
             <div class="leg-teams">${esc(s.home)} vs ${esc(s.away)}</div>
             <div class="score-pair">
               <span style="font-size:12px;color:var(--chalk-dim);min-width:30px">${esc(s.home.split(" ")[0])}</span>
-              <input type="number" min="0" class="score-box pinp" data-id="${id}" data-field="idaH" ${locked?"disabled":""} value="${pred.idaH??''}">
+              <input type="number" min="0" class="score-box pinp" data-id="${id}" data-field="idaH" ${idaLocked?"disabled":""} value="${pred.idaH??''}">
               <span class="score-dash">–</span>
-              <input type="number" min="0" class="score-box pinp" data-id="${id}" data-field="idaA" ${locked?"disabled":""} value="${pred.idaA??''}">
+              <input type="number" min="0" class="score-box pinp" data-id="${id}" data-field="idaA" ${idaLocked?"disabled":""} value="${pred.idaA??''}">
               <span style="font-size:12px;color:var(--chalk-dim);min-width:30px">${esc(s.away.split(" ")[0])}</span>
             </div>
           </div>
           <div class="leg">
-            <span class="leg-label">🏠 VUELTA — Local: ${esc(s.away)}</span>
+            <span class="leg-label">🏠 VUELTA — Local: ${esc(s.away)}${sc&&sc.vueltaDone?` <span style="color:var(--gold-bright)">· ${sc.vuelta} pts</span>`:""}</span>
             <div class="leg-teams">${esc(s.away)} vs ${esc(s.home)}</div>
             <div class="score-pair">
               <span style="font-size:12px;color:var(--chalk-dim);min-width:30px">${esc(s.away.split(" ")[0])}</span>
-              <input type="number" min="0" class="score-box pinp" data-id="${id}" data-field="vueltaH" ${locked?"disabled":""} value="${pred.vueltaH??''}">
+              <input type="number" min="0" class="score-box pinp" data-id="${id}" data-field="vueltaH" ${vueltaLocked?"disabled":""} value="${pred.vueltaH??''}">
               <span class="score-dash">–</span>
-              <input type="number" min="0" class="score-box pinp" data-id="${id}" data-field="vueltaA" ${locked?"disabled":""} value="${pred.vueltaA??''}">
+              <input type="number" min="0" class="score-box pinp" data-id="${id}" data-field="vueltaA" ${vueltaLocked?"disabled":""} value="${pred.vueltaA??''}">
               <span style="font-size:12px;color:var(--chalk-dim);min-width:30px">${esc(s.home.split(" ")[0])}</span>
             </div>
           </div>`;
       }else{
         legsHtml=`<div class="leg">
-          <span class="leg-label">⚽ Partido único</span>
+          <span class="leg-label">⚽ Partido único${sc&&sc.idaDone?` <span style="color:var(--gold-bright)">· ${sc.ida} pts</span>`:""}</span>
           <div class="leg-teams">${esc(s.home)} vs ${esc(s.away)}</div>
           <div class="score-pair">
             <span style="font-size:12px;color:var(--chalk-dim);min-width:30px">${esc(s.home.split(" ")[0])}</span>
-            <input type="number" min="0" class="score-box pinp" data-id="${id}" data-field="unicoH" ${locked?"disabled":""} value="${pred.unicoH??''}">
+            <input type="number" min="0" class="score-box pinp" data-id="${id}" data-field="unicoH" ${idaLocked?"disabled":""} value="${pred.unicoH??''}">
             <span class="score-dash">–</span>
-            <input type="number" min="0" class="score-box pinp" data-id="${id}" data-field="unicoA" ${locked?"disabled":""} value="${pred.unicoA??''}">
+            <input type="number" min="0" class="score-box pinp" data-id="${id}" data-field="unicoA" ${idaLocked?"disabled":""} value="${pred.unicoA??''}">
             <span style="font-size:12px;color:var(--chalk-dim);min-width:30px">${esc(s.away.split(" ")[0])}</span>
           </div>
         </div>`;
       }
       let pointsPill="";
-      if(resultDone){
-        const sc=scoreSeries(r,pred,act);
-        pointsPill=sc?`<div class="points-pill">Ganaste ${sc.total} pts en esta llave</div>`:`<div class="points-pill">No pronosticaste esta llave</div>`;
-      }else if(dateLocked){
+      if(sc){
+        const parts=[];
+        if(sc.clasDone) parts.push(`Clasificado: ${sc.clas} pts`);
+        if(sc.perfect) parts.push(`Bonus llave perfecta: +${sc.perfect}`);
+        pointsPill=`<div class="points-pill">Parcial: ${sc.total.toFixed(2)} pts${parts.length?` (${parts.join(" · ")})`:""}</div>`;
+      }else if(phaseLockedNow){
         pointsPill=`<div class="points-pill">🔒 ${roundStatusLabel(t,r)}</div>`;
       }
-      return `<div class="matchup ${locked?"locked":""}">
+      return `<div class="matchup ${allLocked?"locked":""}">
         <div class="match-header">
           <div class="match-title">${esc(s.home)} <span style="color:var(--chalk-dim);font-size:12px;font-weight:400">vs</span> ${esc(s.away)}</div>
           <div style="font-family:var(--mono);font-size:11px;color:var(--chalk-dim)">
@@ -830,7 +981,7 @@ function renderPronosticar(){
         </div>
         ${legsHtml}
         <div class="leg"><span class="leg-label">¿Quién clasifica?</span>
-          <select class="clas pinp" data-id="${id}" data-field="clasificado" ${locked?"disabled":""}>${opts}</select>
+          <select class="clas pinp" data-id="${id}" data-field="clasificado" ${clasLocked?"disabled":""}>${opts}</select>
         </div>
         ${pointsPill}
       </div>`;
@@ -983,8 +1134,136 @@ function renderAdmin(){
         <button class="btn" onclick="adminResetUserPassword()">Restablecer</button>
       </div>
     </div>
+    ${renderSeedCard()}
+    ${renderAdminUserList()}
+    ${renderAdminUserEditor()}
+    ${renderAdminConsolidated()}
     ${tournamentBlock("CL")}
     ${tournamentBlock("CS")}`;
+}
+function renderSeedCard(){
+  const seedTable=STATE._seedResult ? `
+    <div style="overflow-x:auto;margin-top:10px">
+      <table><thead><tr><th>Jugador</th><th>Contraseña</th><th>Estado</th></tr></thead>
+      <tbody>${STATE._seedResult.map(r=>`<tr><td><b>${esc(r.name)}</b></td><td class="muted" style="font-family:var(--mono)">${esc(r.password)}</td><td class="muted">${r.isNew?"🆕 cuenta creada":"ya existía (contraseña sin cambios)"}</td></tr>`).join("")}</tbody></table>
+    </div>
+    <p class="hint" style="margin-top:8px">Copiá esta tabla y enviale a cada jugador su nombre y contraseña por el medio que prefieras (WhatsApp, etc). Esta tabla no vuelve a mostrarse sola — si la cerrás, para recuperar una contraseña usá "Restablecer contraseña de un participante".</p>
+  ` : "";
+  return `<div class="card">
+    <h2>Precargar jugadores y apuestas (Fase Previa — Sudamericana)</h2>
+    <p class="hint">Como la competencia ya arrancó, esto crea de una vez a los 11 jugadores predefinidos con sus apuestas ya cargadas para las 8 llaves de la Fase Previa de Sudamericana, y genera una contraseña para cada uno (si ya existían, no se les cambia la contraseña).</p>
+    <button class="btn" onclick="seedPreviaPredictions()">Precargar jugadores y apuestas</button>
+    ${seedTable}
+  </div>`;
+}
+function renderAdminUserList(){
+  const users=allUsersList();
+  const rows=users.map(u=>`
+    <div class="phase-row">
+      <div class="pname">${esc(u.name)}</div>
+      <div class="pstatus">Registrado</div>
+      <button class="btn ghost" onclick="adminDeleteUser('${esc(u.name).replace(/'/g,"\\'")}')">🗑 Eliminar</button>
+    </div>`).join("");
+  return `<div class="card">
+    <h2>Participantes registrados (${users.length})</h2>
+    <p class="hint">Eliminar un jugador borra su cuenta y sus pronósticos de ambos torneos. No se puede deshacer.</p>
+    ${rows||'<div class="empty">No hay participantes registrados.</div>'}
+  </div>`;
+}
+function renderAdminUserEditor(){
+  const t=STATE.tournament;
+  const users=allUsersList();
+  if(!users.length) return `<div class="card"><h2>Editar apuestas de un jugador</h2><p class="hint">Todavía no hay participantes registrados.</p></div>`;
+  const selUser=STATE._adminEditUser&&users.some(u=>u.name===STATE._adminEditUser)?STATE._adminEditUser:users[0].name;
+  STATE._adminEditUser=selUser;
+  const bracket=STATE.brackets[t];
+  const pred=loadMyPrediction(t,selUser);
+  let anySeries=false;
+  let cardsHtml="";
+  TOURNEYS[t].rounds.forEach(r=>{
+    const seriesList=bracket[r.key].filter(s=>s.home&&s.away);
+    if(!seriesList.length) return;
+    anySeries=true;
+    const cards=seriesList.map(s=>{
+      const id=r.key+"-"+s.id, p=pred.entries[id]||{};
+      const opts=`<option value="">— elegir —</option><option value="${esc(s.home)}" ${p.clasificado===s.home?"selected":""}>${esc(s.home)}</option><option value="${esc(s.away)}" ${p.clasificado===s.away?"selected":""}>${esc(s.away)}</option>`;
+      let legsHtml;
+      if(r.vuelta){
+        legsHtml=`
+          <div class="leg"><span class="leg-label">🏠 IDA — Local: ${esc(s.home)}</span>
+            <div class="score-pair">
+              <input type="number" min="0" class="score-box ainp" data-id="${id}" data-field="idaH" value="${p.idaH??''}">
+              <span class="score-dash">–</span>
+              <input type="number" min="0" class="score-box ainp" data-id="${id}" data-field="idaA" value="${p.idaA??''}">
+            </div>
+          </div>
+          <div class="leg"><span class="leg-label">🏠 VUELTA — Local: ${esc(s.away)}</span>
+            <div class="score-pair">
+              <input type="number" min="0" class="score-box ainp" data-id="${id}" data-field="vueltaH" value="${p.vueltaH??''}">
+              <span class="score-dash">–</span>
+              <input type="number" min="0" class="score-box ainp" data-id="${id}" data-field="vueltaA" value="${p.vueltaA??''}">
+            </div>
+          </div>`;
+      }else{
+        legsHtml=`<div class="leg"><span class="leg-label">⚽ Partido único</span>
+          <div class="score-pair">
+            <input type="number" min="0" class="score-box ainp" data-id="${id}" data-field="unicoH" value="${p.unicoH??''}">
+            <span class="score-dash">–</span>
+            <input type="number" min="0" class="score-box ainp" data-id="${id}" data-field="unicoA" value="${p.unicoA??''}">
+          </div>
+        </div>`;
+      }
+      return `<div class="matchup">
+        <div class="match-header"><div class="match-title">${esc(s.home)} vs ${esc(s.away)}</div></div>
+        ${legsHtml}
+        <div class="leg"><span class="leg-label">¿Quién clasifica?</span><select class="clas ainp" data-id="${id}" data-field="clasificado">${opts}</select></div>
+      </div>`;
+    }).join("");
+    cardsHtml+=`<div class="card"><h3 style="font-family:var(--mono);font-size:12px;color:var(--gold-bright);text-transform:uppercase">${r.label}</h3>${cards}</div>`;
+  });
+  return `<div class="card">
+    <h2>Editar apuestas de un jugador — ${TOURNEYS[t].label}</h2>
+    <p class="hint">Esto sobreescribe directamente los pronósticos guardados de la persona elegida, sin restricciones de fecha ni de resultados ya cargados. Ideal para corregir errores de carga.</p>
+    <div class="field-group" style="max-width:280px;margin-bottom:6px">
+      <span>Jugador</span>
+      <select ${inp()} onchange="adminPickEditUser(this.value)">
+        ${users.map(u=>`<option value="${esc(u.name)}" ${u.name===selUser?"selected":""}>${esc(u.name)}</option>`).join("")}
+      </select>
+    </div>
+    ${anySeries?"":'<div class="empty">No hay equipos cargados en el cuadro todavía.</div>'}
+    ${cardsHtml}
+    ${anySeries?`<div class="btn-row"><button class="btn" onclick="saveUserPredsAsAdmin('${esc(selUser).replace(/'/g,"\\'")}')">Guardar cambios de ${esc(selUser)}</button></div>`:""}
+  </div>`;
+}
+function renderAdminConsolidated(){
+  const t=STATE.tournament;
+  const bracket=STATE.brackets[t];
+  const users=allUsersList();
+  if(!users.length) return `<div class="card"><h2>Consolidado de apuestas</h2><p class="hint">No hay participantes todavía.</p></div>`;
+  let seriesCols=[];
+  TOURNEYS[t].rounds.forEach(r=>{
+    bracket[r.key].filter(s=>s.home&&s.away).forEach(s=>{ seriesCols.push({id:r.key+"-"+s.id,round:r,s}); });
+  });
+  if(!seriesCols.length) return `<div class="card"><h2>Consolidado de apuestas</h2><p class="hint">No hay llaves con equipos cargados todavía.</p></div>`;
+  const headHtml=seriesCols.map(c=>`<th>${esc(c.s.home.split(" ")[0])} vs ${esc(c.s.away.split(" ")[0])}</th>`).join("");
+  const rowsHtml=users.map(u=>{
+    const pred=loadMyPrediction(t,u.name);
+    const cells=seriesCols.map(c=>{
+      const p=pred.entries[c.id];
+      if(!p) return `<td class="muted">—</td>`;
+      let txt;
+      if(c.round.vuelta) txt=`${p.idaH??"?"}-${p.idaA??"?"} / ${p.vueltaH??"?"}-${p.vueltaA??"?"}`;
+      else txt=`${p.unicoH??"?"}-${p.unicoA??"?"}`;
+      if(p.clasificado) txt+=` · ${p.clasificado.split(" ")[0]}`;
+      return `<td class="muted" style="white-space:nowrap">${esc(txt)}</td>`;
+    }).join("");
+    return `<tr><td><b>${esc(u.name)}</b></td>${cells}</tr>`;
+  }).join("");
+  return `<div class="card">
+    <h2>Consolidado de apuestas — ${TOURNEYS[t].label}</h2>
+    <p class="hint">Vista rápida de lo que pronosticó cada participante en cada llave (ida / vuelta · clasificado).</p>
+    <div style="overflow-x:auto"><table><thead><tr><th>Jugador</th>${headHtml}</tr></thead><tbody>${rowsHtml}</tbody></table></div>
+  </div>`;
 }
 function setPhaseStatus(t,roundKey,status){
   const data=STATE.phaseStatus[t]||{};
