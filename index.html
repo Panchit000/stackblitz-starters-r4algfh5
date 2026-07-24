@@ -293,7 +293,7 @@ const TOURNEYS = {
     ]
   }
 };
-const TAB_KEYS = ["cuadro","pronosticar","resultados","tabla","reglas","admin"];
+const TAB_KEYS = ["cuadro","pronosticar","resultados","consolidado","tabla","reglas","admin"];
 
 /* =====================================================================
    SEEDS Y LLAVES OFICIALES
@@ -529,6 +529,38 @@ function adminDeleteUser(name){
   toast(`"${name}" eliminado`);
   render();
 }
+/* Renombra a un jugador manteniendo su contraseña y todos sus pronósticos (Libertadores y Sudamericana). */
+function adminRenameUser(){
+  if(!STATE.isAdmin){ toast("Solo el administrador puede hacer esto"); return; }
+  const oldName=document.getElementById("renameOld").value.trim();
+  const newName=document.getElementById("renameNew").value.trim();
+  if(!oldName||!newName){ toast("Completa el nombre actual y el nuevo nombre"); return; }
+  const oldSlug=slug(oldName), newSlug=slug(newName);
+  const rawUser=lsGet("user:"+oldSlug);
+  if(!rawUser){ toast(`No existe ninguna cuenta con el nombre "${oldName}"`); return; }
+  if(oldSlug!==newSlug && lsGet("user:"+newSlug)){ toast(`Ya existe una cuenta con el nombre "${newName}"`); return; }
+  let u; try{ u=JSON.parse(rawUser); }catch(e){ toast("Error al leer la cuenta"); return; }
+  u.name=newName;
+  lsSet("user:"+newSlug,JSON.stringify(u));
+  if(newSlug!==oldSlug) lsDel("user:"+oldSlug);
+  ["CL","CS"].forEach(t=>{
+    const predKey="pred:"+t+":"+oldSlug;
+    const rawPred=lsGet(predKey);
+    if(rawPred){
+      let p; try{ p=JSON.parse(rawPred); }catch(e){ p=null; }
+      if(p){
+        p.displayName=newName;
+        lsSet("pred:"+t+":"+newSlug,JSON.stringify(p));
+        if(newSlug!==oldSlug) lsDel(predKey);
+      }
+    }
+  });
+  if(STATE.me===oldName){ STATE.me=newName; lsSet("session",JSON.stringify({name:newName})); }
+  toast(`"${oldName}" ahora se llama "${newName}"`);
+  document.getElementById("renameOld").value="";
+  document.getElementById("renameNew").value="";
+  render();
+}
 /* El admin edita/corrige los pronósticos de cualquier jugador, sin restricciones de fecha ni de resultados. */
 function saveUserPredsAsAdmin(name){
   if(!STATE.isAdmin){ toast("Solo el administrador puede hacer esto"); return; }
@@ -582,7 +614,7 @@ const PRELOAD_PLAYERS=[
     [2,0,1,1,"Boca Juniors"],[2,0,2,1,"Bolívar"],[2,0,1,1,"Santa Fe"],[1,1,2,1,"Vasco da Gama"],
     [1,1,2,1,"Bragantino"],[0,2,3,0,"Santos"],[1,0,1,1,"Nacional"],[2,0,1,1,"Lanús"]
   ]},
-  {name:"Desidente", llaves:[
+  {name:"Disidente", llaves:[
     [1,0,2,1,"O'Higgins"],[2,1,3,0,"Grêmio"],[3,0,1,1,"Santa Fe"],[1,1,2,0,"Vasco da Gama"],
     [1,2,3,0,"Bragantino"],[0,2,4,0,"Santos"],[1,1,2,1,"Tigre"],[2,0,1,0,"Lanús"]
   ]},
@@ -793,6 +825,7 @@ function renderTab(){
   if(STATE.tab==="cuadro") el.innerHTML=renderCuadro();
   else if(STATE.tab==="pronosticar") el.innerHTML=renderPronosticar();
   else if(STATE.tab==="resultados") el.innerHTML=renderResultados();
+  else if(STATE.tab==="consolidado") el.innerHTML=renderConsolidadoPublico();
   else if(STATE.tab==="tabla") el.innerHTML=renderTabla();
   else if(STATE.tab==="reglas") el.innerHTML=renderReglas();
   else if(STATE.tab==="admin") el.innerHTML=renderAdmin();
@@ -930,7 +963,7 @@ function renderPronosticar(){
       if(r.vuelta){
         legsHtml=`
           <div class="leg">
-            <span class="leg-label">🏠 IDA — Local: ${esc(s.home)}${sc&&sc.idaDone?` <span style="color:var(--gold-bright)">· ${sc.ida} pts</span>`:""}</span>
+            <span class="leg-label">🏠 IDA — Local: ${esc(s.home)}${sc&&sc.idaDone?` <span style="color:var(--gold-bright)">· ${sc.ida} pts</span>`:""}${sc&&sc.idaDone?` <span class="muted">· Real: ${act.idaH}-${act.idaA}</span>`:""}</span>
             <div class="leg-teams">${esc(s.home)} vs ${esc(s.away)}</div>
             <div class="score-pair">
               <span style="font-size:12px;color:var(--chalk-dim);min-width:30px">${esc(s.home.split(" ")[0])}</span>
@@ -941,7 +974,7 @@ function renderPronosticar(){
             </div>
           </div>
           <div class="leg">
-            <span class="leg-label">🏠 VUELTA — Local: ${esc(s.away)}${sc&&sc.vueltaDone?` <span style="color:var(--gold-bright)">· ${sc.vuelta} pts</span>`:""}</span>
+            <span class="leg-label">🏠 VUELTA — Local: ${esc(s.away)}${sc&&sc.vueltaDone?` <span style="color:var(--gold-bright)">· ${sc.vuelta} pts</span>`:""}${sc&&sc.vueltaDone?` <span class="muted">· Real: ${act.vueltaH}-${act.vueltaA}</span>`:""}</span>
             <div class="leg-teams">${esc(s.away)} vs ${esc(s.home)}</div>
             <div class="score-pair">
               <span style="font-size:12px;color:var(--chalk-dim);min-width:30px">${esc(s.away.split(" ")[0])}</span>
@@ -953,7 +986,7 @@ function renderPronosticar(){
           </div>`;
       }else{
         legsHtml=`<div class="leg">
-          <span class="leg-label">⚽ Partido único${sc&&sc.idaDone?` <span style="color:var(--gold-bright)">· ${sc.ida} pts</span>`:""}</span>
+          <span class="leg-label">⚽ Partido único${sc&&sc.idaDone?` <span style="color:var(--gold-bright)">· ${sc.ida} pts</span>`:""}${sc&&sc.idaDone?` <span class="muted">· Real: ${act.unicoH}-${act.unicoA}</span>`:""}</span>
           <div class="leg-teams">${esc(s.home)} vs ${esc(s.away)}</div>
           <div class="score-pair">
             <span style="font-size:12px;color:var(--chalk-dim);min-width:30px">${esc(s.home.split(" ")[0])}</span>
@@ -981,7 +1014,7 @@ function renderPronosticar(){
           </div>
         </div>
         ${legsHtml}
-        <div class="leg"><span class="leg-label">¿Quién clasifica?</span>
+        <div class="leg"><span class="leg-label">¿Quién clasifica?${sc&&sc.clasDone?` <span class="muted">· Pasó: ${esc(act.clasificado)}</span>`:""}</span>
           <select class="clas pinp" data-id="${id}" data-field="clasificado" ${clasLocked?"disabled":""}>${opts}</select>
         </div>
         ${pointsPill}
@@ -1135,6 +1168,15 @@ function renderAdmin(){
         <button class="btn" onclick="adminResetUserPassword()">Restablecer</button>
       </div>
     </div>
+    <div class="card">
+      <h2>Renombrar jugador</h2>
+      <p class="hint">Cambia el nombre visible de un jugador manteniendo su contraseña y todos sus pronósticos (Libertadores y Sudamericana).</p>
+      <div class="btn-row" style="align-items:flex-end">
+        <div class="field-group"><span>Nombre actual</span><input id="renameOld" type="text" placeholder="Nombre exacto" ${inp("min-width:160px")}></div>
+        <div class="field-group"><span>Nombre nuevo</span><input id="renameNew" type="text" placeholder="Nuevo nombre" ${inp("min-width:160px")}></div>
+        <button class="btn" onclick="adminRenameUser()">Renombrar</button>
+      </div>
+    </div>
     ${renderSeedCard()}
     ${renderAdminUserList()}
     ${renderAdminUserEditor()}
@@ -1236,6 +1278,60 @@ function renderAdminUserEditor(){
     ${anySeries?`<div class="btn-row"><button class="btn" onclick="saveUserPredsAsAdmin('${esc(selUser).replace(/'/g,"\\'")}')">Guardar cambios de ${esc(selUser)}</button></div>`:""}
   </div>`;
 }
+/* ======================= CONSOLIDADO PÚBLICO (visible para todos) ======================= */
+/* A diferencia del consolidado del admin, esta vista solo muestra una fase una vez que
+   está cerrada (ya sea porque arrancó su primer partido, o porque el admin la cerró
+   manualmente) — así nadie ve las apuestas ajenas mientras la fase sigue abierta. */
+function renderConsolidadoPublico(){
+  const t=STATE.tournament;
+  const bracket=STATE.brackets[t];
+  const results=STATE.results[t]||{};
+  const users=allUsersList();
+  if(!users.length) return `<div class="card"><h2>Consolidado de apuestas — ${TOURNEYS[t].label}</h2><p class="hint">Todavía no hay participantes registrados.</p></div>`;
+  let bodyHtml="";
+  let anyClosed=false, anyOpen=false;
+  TOURNEYS[t].rounds.forEach(r=>{
+    const seriesList=bracket[r.key].filter(s=>s.home&&s.away);
+    if(!seriesList.length) return;
+    if(!isRoundLocked(t,r)){ anyOpen=true; return; }
+    anyClosed=true;
+    const headHtml=seriesList.map(s=>`<th>${esc(s.home.split(" ")[0])} vs ${esc(s.away.split(" ")[0])}</th>`).join("");
+    const realCells=seriesList.map(s=>{
+      const id=r.key+"-"+s.id, act=results[id]||{};
+      let txt="—";
+      if(r.vuelta){
+        if(act.idaH!=null&&act.idaA!=null&&act.vueltaH!=null&&act.vueltaA!=null) txt=`${act.idaH}-${act.idaA} / ${act.vueltaH}-${act.vueltaA}`;
+        else if(act.idaH!=null&&act.idaA!=null) txt=`${act.idaH}-${act.idaA} / —`;
+      }else if(act.unicoH!=null&&act.unicoA!=null) txt=`${act.unicoH}-${act.unicoA}`;
+      if(act.clasificado) txt+=` · ${act.clasificado.split(" ")[0]}`;
+      return `<td style="white-space:nowrap;color:var(--gold-bright);font-weight:700">${esc(txt)}</td>`;
+    }).join("");
+    const rowsHtml=users.map(u=>{
+      const pred=loadMyPrediction(t,u.name);
+      const cells=seriesList.map(s=>{
+        const id=r.key+"-"+s.id, p=pred.entries[id];
+        if(!p) return `<td class="muted">—</td>`;
+        let txt;
+        if(r.vuelta) txt=`${p.idaH??"?"}-${p.idaA??"?"} / ${p.vueltaH??"?"}-${p.vueltaA??"?"}`;
+        else txt=`${p.unicoH??"?"}-${p.unicoA??"?"}`;
+        if(p.clasificado) txt+=` · ${p.clasificado.split(" ")[0]}`;
+        return `<td class="muted" style="white-space:nowrap">${esc(txt)}</td>`;
+      }).join("");
+      return `<tr><td><b>${esc(u.name)}</b></td>${cells}</tr>`;
+    }).join("");
+    bodyHtml+=`<div class="card"><h2>${r.label}</h2>
+      <div style="overflow-x:auto"><table>
+        <thead><tr><th>Jugador</th>${headHtml}</tr></thead>
+        <tbody><tr><td><b>🏆 Resultado real</b></td>${realCells}</tr>${rowsHtml}</tbody>
+      </table></div>
+    </div>`;
+  });
+  const intro=`<div class="card"><h2>Consolidado de apuestas — ${TOURNEYS[t].label}</h2><p class="hint">El consolidado de cada fase se revela automáticamente apenas esa fase cierra (arranca su primer partido, o el administrador la cierra manualmente).${anyOpen?" Hay fases todavía abiertas que no se muestran acá todavía.":""}</p></div>`;
+  if(!anyClosed) return intro+`<div class="empty">Todavía no hay ninguna fase cerrada.</div>`;
+  return intro+bodyHtml;
+}
+
+/* ======================= CONSOLIDADO ADMIN (todas las fases, siempre visible) ======================= */
 function renderAdminConsolidated(){
   const t=STATE.tournament;
   const bracket=STATE.brackets[t];
@@ -1284,13 +1380,33 @@ function renderTabla(){
   clRows.forEach(r=>{ const k=r.name.toLowerCase(); combinedMap[k]=combinedMap[k]||{name:r.name,total:0}; combinedMap[k].total+=r.total; });
   csRows.forEach(r=>{ const k=r.name.toLowerCase(); combinedMap[k]=combinedMap[k]||{name:r.name,total:0}; combinedMap[k].total+=r.total; });
   const combined=Object.values(combinedMap).sort((a,b)=>b.total-a.total);
+
+  // Asigna el mismo puesto si dos filas empatan en TODOS los criterios de desempate
+  // (ranking "1,1,3,4..." en vez de "1,2,3,4..."), en vez de que el puesto solo
+  // dependa de la posición en la lista.
+  function assignRanks(rows, tieKeys){
+    let rank=1;
+    rows.forEach((r,i)=>{
+      if(i>0){
+        const prev=rows[i-1];
+        const same=tieKeys.every(k=>r[k]===prev[k]);
+        if(!same) rank=i+1;
+      }
+      r._rank=rank;
+    });
+    return rows;
+  }
+  assignRanks(clRows, ["total","exact","clasOk","semiFinalPts","diffOk"]);
+  assignRanks(csRows, ["total","exact","clasOk","semiFinalPts","diffOk"]);
+  assignRanks(combined, ["total"]);
+
   const thead=`<thead><tr><th>#</th><th>Participante</th><th>Puntos</th><th>Exactos</th><th>Clasif.</th><th>Semis+Final</th><th>Dif. gol</th></tr></thead>`;
-  const mkRows=rows=>rows.length?rows.map((r,i)=>`<tr><td class="rank">${i+1}</td><td>${esc(r.name)}</td><td><b>${r.total.toFixed(2)}</b></td><td class="muted">${r.exact}</td><td class="muted">${r.clasOk}</td><td class="muted">${r.semiFinalPts.toFixed(2)}</td><td class="muted">${r.diffOk}</td></tr>`).join(""):`<tr><td colspan="7" class="empty">Sin datos todavía.</td></tr>`;
-  const comb3=combined.length?combined.map((r,i)=>`<tr><td class="rank">${i+1}</td><td>${esc(r.name)}</td><td><b>${r.total.toFixed(2)}</b></td></tr>`).join(""):`<tr><td colspan="3" class="empty">Sin datos todavía.</td></tr>`;
+  const mkRows=rows=>rows.length?rows.map(r=>`<tr><td class="rank">${r._rank}</td><td>${esc(r.name)}</td><td><b>${r.total.toFixed(2)}</b></td><td class="muted">${r.exact}</td><td class="muted">${r.clasOk}</td><td class="muted">${r.semiFinalPts.toFixed(2)}</td><td class="muted">${r.diffOk}</td></tr>`).join(""):`<tr><td colspan="7" class="empty">Sin datos todavía.</td></tr>`;
+  const comb3=combined.length?combined.map(r=>`<tr><td class="rank">${r._rank}</td><td>${esc(r.name)}</td><td><b>${r.total.toFixed(2)}</b></td></tr>`).join(""):`<tr><td colspan="3" class="empty">Sin datos todavía.</td></tr>`;
   return `
-    <div class="card"><h2>1. Ranking Copa Libertadores</h2><p class="hint">Desempate: exactos → clasificados → puntos semis/final → diferencias de gol. Si sigue el empate, premio compartido.</p><table>${thead}<tbody>${mkRows(clRows)}</tbody></table></div>
-    <div class="card"><h2>2. Ranking Copa Sudamericana</h2><p class="hint">Incluye la Fase Previa (×1). Mismo criterio de desempate.</p><table>${thead}<tbody>${mkRows(csRows)}</tbody></table></div>
-    <div class="card"><h2>3. Ranking combinado</h2><p class="hint">Suma el puntaje de ambos torneos por participante.</p><table><thead><tr><th>#</th><th>Participante</th><th>Puntos totales</th></tr></thead><tbody>${comb3}</tbody></table></div>`;
+    <div class="card"><h2>1. Ranking Copa Libertadores</h2><p class="hint">Desempate: exactos → clasificados → puntos semis/final → diferencias de gol. Si dos participantes empatan en TODOS estos criterios, quedan en el mismo puesto (ej: ambos primeros, y el siguiente pasa a ser tercero).</p><table>${thead}<tbody>${mkRows(clRows)}</tbody></table></div>
+    <div class="card"><h2>2. Ranking Copa Sudamericana</h2><p class="hint">Incluye la Fase Previa (×1). Mismo criterio de desempate y de empate en el puesto.</p><table>${thead}<tbody>${mkRows(csRows)}</tbody></table></div>
+    <div class="card"><h2>3. Ranking combinado</h2><p class="hint">Suma el puntaje de ambos torneos por participante. Empate en puntos = mismo puesto.</p><table><thead><tr><th>#</th><th>Participante</th><th>Puntos totales</th></tr></thead><tbody>${comb3}</tbody></table></div>`;
 }
 
 /* =====================================================================
@@ -1323,7 +1439,7 @@ function renderReglas(){
     </ul>
     <h2 style="margin-top:16px">Desempates</h2>
     <ul class="rules-list">
-      <li>1° Más marcadores exactos · 2° Más clasificados acertados · 3° Más puntos en semis+final · 4° Más diferencias de gol acertadas · Si sigue el empate: premio compartido.</li>
+      <li>1° Más marcadores exactos · 2° Más clasificados acertados · 3° Más puntos en semis+final · 4° Más diferencias de gol acertadas · Si dos o más participantes empatan en todos estos criterios, quedan en el mismo puesto (por ejemplo, si dos empatan como primeros, el siguiente en la tabla pasa a ser tercero, no segundo).</li>
     </ul>
     <h2 style="margin-top:16px">Restricción de fechas</h2>
     <ul class="rules-list">
